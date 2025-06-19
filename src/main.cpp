@@ -27,7 +27,7 @@ int main()
 {
   std::cout << "Hello, Digital Audio Workstation!" << std::endl;
   
-  Midi::MidiEngine midi_engine;
+  Midi::MidiEngine& midi_engine = Midi::MidiEngine::instance();
 
   std::vector<Midi::MidiPort> ports = midi_engine.get_ports();
 

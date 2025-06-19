@@ -86,9 +86,11 @@ struct MidiMessage
  */
 class MidiEngine
 {
-public:   
-  MidiEngine();
-  virtual ~MidiEngine();
+public:
+  static MidiEngine& instance() {
+      static MidiEngine instance;
+      return instance;
+  }
 
   std::vector<MidiPort> get_ports();
 
@@ -115,6 +117,11 @@ public:
   }
 
 private:
+  MidiEngine();
+  virtual ~MidiEngine();
+  MidiEngine(const MidiEngine&) = delete;
+  MidiEngine& operator=(const MidiEngine&) = delete;
+
   std::unique_ptr<RtMidiIn> p_midi_in;
 
   std::queue<MidiMessage> m_message_queue;
