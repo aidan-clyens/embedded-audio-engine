@@ -3,10 +3,21 @@
 
 #include <RtMidi.h>
 #include <memory>
+#include <vector>
+#include <string>
 
 namespace Midi
 {
 
+/** @struct MidiPort
+ *  @brief Represents a MIDI port with its number and name.
+ */
+struct MidiPort
+{
+  unsigned int port_number;
+  std::string port_name;
+};
+  
 /** @class MidiEngine
  *  @brief The MidiEngine class is responsible for managing MIDI input.
  */
@@ -16,9 +27,9 @@ public:
   MidiEngine();
   virtual ~MidiEngine();
 
-  void get_ports();
+  std::vector<MidiPort> get_ports();
 
-  bool open_input_port(unsigned int port_number = 0);
+  void open_input_port(unsigned int port_number = 0);
 
 private:
   std::unique_ptr<RtMidiIn> p_midi_in;

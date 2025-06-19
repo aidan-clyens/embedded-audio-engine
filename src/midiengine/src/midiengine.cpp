@@ -34,10 +34,14 @@ MidiEngine::~MidiEngine()
 
 /** @brief Lists all available MIDI input ports.
  *  This function retrieves and prints the names of all available MIDI input ports.
+ *
+ *  @return A vector of MidiPort objects representing the available MIDI ports.
  */
-void MidiEngine::get_ports()
+std::vector<MidiPort> MidiEngine::get_ports()
 {
   assert(p_midi_in != nullptr && "MIDI input instance is not initialized");
+
+  std::vector<MidiPort> ports;
 
   // Get the number of available MIDI input ports
   unsigned int port_count = p_midi_in->getPortCount();
@@ -49,19 +53,22 @@ void MidiEngine::get_ports()
     try
     {
       std::string port_name = p_midi_in->getPortName(i);
-      std::cout << "Port " << i << ": " << port_name << std::endl;
+      ports.push_back({i, port_name});
     } catch (const RtMidiError &error)
     {
       std::cerr << "Error getting port name: " << error.getMessage() << std::endl;
     }
   }
+
+  return ports;
 }
 
 /** @brief Opens a MIDI input port.
  *  @param port_number The index of the MIDI port to open (default is 0).
- *  @return True if the port was opened successfully, false otherwise.
+ *  @throws std::out_of_range if the port_number is invalid.
+ *  @throws std::runtime_error if the port cannot be opened.
  */
-bool MidiEngine::open_input_port(unsigned int port_number)
+void MidiEngine::open_input_port(unsigned int port_number)
 {
   assert(p_midi_in != nullptr && "MIDI input instance is not initialized");
 
@@ -79,6 +86,4 @@ bool MidiEngine::open_input_port(unsigned int port_number)
   {
     throw std::runtime_error("Failed to open MIDI input port: " + error.getMessage());
   }
-
-  return true;
 }
