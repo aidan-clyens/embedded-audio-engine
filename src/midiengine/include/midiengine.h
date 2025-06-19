@@ -17,7 +17,7 @@ struct MidiPort
   unsigned int port_number;
   std::string port_name;
 };
-  
+
 /** @class MidiEngine
  *  @brief The MidiEngine class is responsible for managing MIDI input.
  */

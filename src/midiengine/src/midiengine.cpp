@@ -6,6 +6,25 @@
 
 using namespace Midi;
 
+/** @brief Callback function to handle incoming MIDI messages.
+ *  This function is called by the RtMidi library when a MIDI message is received.
+ *  It prints the received MIDI message to the console.
+ *
+ *  @param deltatime The time in seconds since the last message was received.
+ *  @param message A vector containing the MIDI message bytes.
+ *  @param user_data User-defined data passed to the callback (not used here).
+ */
+void midi_callback(double deltatime, std::vector<unsigned char> *message, void *user_data)
+{
+  std::cout << "Received MIDI message: [";
+  for (size_t i = 0; i < message->size(); ++i)
+  {
+    std::cout << static_cast<int>(message->at(i));
+    if (i < message->size() - 1) std::cout << ", ";
+  }
+  std::cout << "] at " << deltatime << " seconds\n";
+}
+
 /** @brief Constructor for the MidiEngine class.
  */
 MidiEngine::MidiEngine()
@@ -72,12 +91,16 @@ void MidiEngine::open_input_port(unsigned int port_number)
   // Set up the MIDI input port
   try
   {
-    p_midi_in->openPort(0); // Open the first available MIDI input port
-    std::cout << "MIDI input port opened successfully." << std::endl;
+    p_midi_in->openPort(port_number);
   } catch (const RtMidiError &error)
   {
     throw std::runtime_error("Failed to open MIDI input port: " + error.getMessage());
   }
+
+  std::cout << "MIDI input port opened successfully." << std::endl;
+  // Set the callback function to handle incoming MIDI messages
+  p_midi_in->setCallback(&midi_callback);
+  p_midi_in->ignoreTypes(false, false, false);
 }
 
 /** @brief Closes the currently opened MIDI input port.
