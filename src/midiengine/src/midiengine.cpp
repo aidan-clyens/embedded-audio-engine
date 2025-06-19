@@ -21,16 +21,18 @@ void midi_callback(double deltatime, std::vector<unsigned char> *message, void *
   MidiMessage midi_message;
 
   midi_message.deltatime = deltatime;
-  midi_message.status = (eMidiMessageType)message->at(0);
+  midi_message.status = message->at(0);
+  midi_message.type = static_cast<eMidiMessageType>(midi_message.status & 0xF0);
+  midi_message.channel = midi_message.status & 0x0F;
   midi_message.data1 = message->size() > 1 ? message->at(1) : 0;
   midi_message.data2 = message->size() > 2 ? message->at(2) : 0;
 
-  auto it = midi_message_type_names.find(midi_message.status);
+  auto it = midi_message_type_names.find(midi_message.type);
   midi_message.type_name = it != midi_message_type_names.end() ? it->second : "Unknown MIDI Message";
 
   std::cout << "Received MIDI message: ";
   std::cout << "Type: " << midi_message.type_name
-            << ", Status: 0x" << std::hex << static_cast<int>(midi_message.status)
+            << ", Channel: " << static_cast<int>(midi_message.channel)
             << ", Data1: 0x" << static_cast<int>(midi_message.data1)
             << ", Data2: 0x" << static_cast<int>(midi_message.data2)
             << ", ";

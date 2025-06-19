@@ -71,7 +71,9 @@ struct MidiPort
 struct MidiMessage
 {
   double deltatime;  // Time in seconds since the last message
-  eMidiMessageType status;  // Status byte of the MIDI message
+  unsigned char status;  // Status byte of the MIDI message
+  eMidiMessageType type; // Type of the MIDI message (e.g., Note On, Control Change)
+  unsigned char channel; // MIDI channel (0-15)
   unsigned char data1;   // First data byte (e.g., note number, control change number)
   unsigned char data2;   // Second data byte (e.g., velocity, control change value)
   std::string type_name; // Human-readable name of the MIDI message type
