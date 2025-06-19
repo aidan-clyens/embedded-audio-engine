@@ -21,15 +21,7 @@ MidiEngine::MidiEngine()
  */
 MidiEngine::~MidiEngine()
 {
-  assert(p_midi_in != nullptr && "MIDI input instance is not initialized");
-
-  try
-  {
-    p_midi_in->closePort(); // Close the MIDI input port
-  } catch (const RtMidiError &error)
-  {
-    // Handle error if necessary, but do not throw in destructor
-  }
+  close_input_port();
 }
 
 /** @brief Lists all available MIDI input ports.
@@ -85,5 +77,27 @@ void MidiEngine::open_input_port(unsigned int port_number)
   } catch (const RtMidiError &error)
   {
     throw std::runtime_error("Failed to open MIDI input port: " + error.getMessage());
+  }
+}
+
+/** @brief Closes the currently opened MIDI input port.
+ */
+void MidiEngine::close_input_port()
+{
+  assert(p_midi_in != nullptr && "MIDI input instance is not initialized");
+
+  if (!p_midi_in->isPortOpen())
+  {
+    std::cout << "No MIDI input port is currently open." << std::endl;
+    return;
+  }
+
+  try
+  {
+    p_midi_in->closePort();
+    std::cout << "MIDI input port closed successfully." << std::endl;
+  } catch (const RtMidiError &error)
+  {
+    std::cerr << "Error closing MIDI input port: " << error.getMessage() << std::endl;
   }
 }

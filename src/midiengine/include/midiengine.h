@@ -30,6 +30,7 @@ public:
   std::vector<MidiPort> get_ports();
 
   void open_input_port(unsigned int port_number = 0);
+  void close_input_port();
 
 private:
   std::unique_ptr<RtMidiIn> p_midi_in;
