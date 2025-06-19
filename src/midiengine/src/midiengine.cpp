@@ -137,3 +137,50 @@ void MidiEngine::close_input_port()
     std::cerr << "Error closing MIDI input port: " << error.getMessage() << std::endl;
   }
 }
+
+/** @brief Start the MidiEngine thread.
+ */
+void MidiEngine::start() {
+  if (m_running) return;
+  m_running = true;
+  m_thread = std::thread(&MidiEngine::run, this);
+}
+
+/** @brief Stop the MidiEngine thread.
+ */
+void MidiEngine::stop() {
+  if (!m_running) return;
+  m_running = false;
+  if (m_thread.joinable()) {
+      m_thread.join();
+  }
+}
+
+/** @brief Check if the MidiEngine is running. 
+ */
+bool MidiEngine::is_running() const {
+  return m_running;
+}
+
+/** @brief The main loop of the MidiEngine thread.
+ *  This function continuously checks for incoming MIDI messages and processes them.
+ */
+void MidiEngine::run() {
+  while (m_running) {
+    try {
+      MidiMessage message = dequeue_message();
+      // Process the MIDI message here, or call a user-defined handler
+      std::cout << "[Thread] Received MIDI message: "
+                << "Delta Time: " << message.deltatime
+                << ", Status: " << static_cast<int>(message.status)
+                << ", Type: " << message.type_name
+                << ", Channel: " << static_cast<int>(message.channel)
+                << ", Data1: " << static_cast<int>(message.data1)
+                << ", Data2: " << static_cast<int>(message.data2)
+                << std::endl;
+    } catch (const std::exception&) {
+      // No message, sleep briefly
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+  }
+}

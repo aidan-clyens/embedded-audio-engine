@@ -53,28 +53,15 @@ int main()
   std::signal(SIGINT, signal_handler);
   app_running = true;
 
+  midi_engine.start();
+
   while (app_running)
   {
-    // Main loop can be extended to handle MIDI messages or other tasks
-    try
-    {
-      Midi::MidiMessage message = midi_engine.dequeue_message();
-      std::cout << "Received MIDI message: "
-                << "Delta Time: " << message.deltatime
-                << ", Status: " << static_cast<int>(message.status)
-                << ", Type: " << message.type_name
-                << ", Channel: " << static_cast<int>(message.channel)
-                << ", Data1: " << static_cast<int>(message.data1)
-                << ", Data2: " << static_cast<int>(message.data2) 
-                << std::endl;
-    }
-    catch (const std::exception& e) {
-      // Ignore
-    }
-
     // Wait for the signal handler to set app_running to false
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
+
+  midi_engine.stop();
 
   return 0;
 }

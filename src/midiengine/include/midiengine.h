@@ -8,6 +8,8 @@
 #include <map>
 #include <queue>
 #include <mutex>
+#include <thread>
+#include <atomic>
 
 namespace Midi
 {
@@ -116,16 +118,26 @@ public:
     return message;
   }
 
+  // Thread control
+  void start();
+  void stop();
+  bool is_running() const;
+
 private:
   MidiEngine();
   virtual ~MidiEngine();
   MidiEngine(const MidiEngine&) = delete;
   MidiEngine& operator=(const MidiEngine&) = delete;
 
+  void run(); // Thread main loop
+
   std::unique_ptr<RtMidiIn> p_midi_in;
 
   std::queue<MidiMessage> m_message_queue;
   std::mutex m_queue_mutex;
+
+  std::thread m_thread;
+  std::atomic<bool> m_running{false};
 };
 
 }  // namespace Midi
