@@ -16,13 +16,25 @@ using namespace Midi;
  */
 void midi_callback(double deltatime, std::vector<unsigned char> *message, void *user_data)
 {
-  std::cout << "Received MIDI message: [";
-  for (size_t i = 0; i < message->size(); ++i)
-  {
-    std::cout << static_cast<int>(message->at(i));
-    if (i < message->size() - 1) std::cout << ", ";
-  }
-  std::cout << "] at " << deltatime << " seconds\n";
+  assert(message != nullptr && "Received null MIDI message");
+
+  MidiMessage midi_message;
+
+  midi_message.deltatime = deltatime;
+  midi_message.status = (eMidiMessageType)message->at(0);
+  midi_message.data1 = message->size() > 1 ? message->at(1) : 0;
+  midi_message.data2 = message->size() > 2 ? message->at(2) : 0;
+
+  auto it = midi_message_type_names.find(midi_message.status);
+  midi_message.type_name = it != midi_message_type_names.end() ? it->second : "Unknown MIDI Message";
+
+  std::cout << "Received MIDI message: ";
+  std::cout << "Type: " << midi_message.type_name
+            << ", Status: 0x" << std::hex << static_cast<int>(midi_message.status)
+            << ", Data1: 0x" << static_cast<int>(midi_message.data1)
+            << ", Data2: 0x" << static_cast<int>(midi_message.data2)
+            << ", ";
+  std::cout << "at " << deltatime << " seconds\n";
 }
 
 /** @brief Constructor for the MidiEngine class.
@@ -100,7 +112,7 @@ void MidiEngine::open_input_port(unsigned int port_number)
   std::cout << "MIDI input port opened successfully." << std::endl;
   // Set the callback function to handle incoming MIDI messages
   p_midi_in->setCallback(&midi_callback);
-  p_midi_in->ignoreTypes(false, false, false);
+  p_midi_in->ignoreTypes(false, true, true);
 }
 
 /** @brief Closes the currently opened MIDI input port.
