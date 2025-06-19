@@ -12,12 +12,17 @@ using namespace Midi;
  *
  *  @param deltatime The time in seconds since the last message was received.
  *  @param message A vector containing the MIDI message bytes.
- *  @param user_data User-defined data passed to the callback (not used here).
+ *  @param user_data A pointer to the MidiEngine object.
  */
 void midi_callback(double deltatime, std::vector<unsigned char> *message, void *user_data)
 {
   assert(message != nullptr && "Received null MIDI message");
+  assert(user_data != nullptr && "User data is null in MIDI callback");
 
+  MidiEngine *midi_engine = static_cast<MidiEngine *>(user_data);
+  assert(midi_engine != nullptr && "MidiEngine instance is null in MIDI callback");
+
+  // Parse incoming MIDI messages
   MidiMessage midi_message;
 
   midi_message.deltatime = deltatime;
@@ -30,13 +35,7 @@ void midi_callback(double deltatime, std::vector<unsigned char> *message, void *
   auto it = midi_message_type_names.find(midi_message.type);
   midi_message.type_name = it != midi_message_type_names.end() ? it->second : "Unknown MIDI Message";
 
-  std::cout << "Received MIDI message: ";
-  std::cout << "Type: " << midi_message.type_name
-            << ", Channel: " << static_cast<int>(midi_message.channel)
-            << ", Data1: 0x" << static_cast<int>(midi_message.data1)
-            << ", Data2: 0x" << static_cast<int>(midi_message.data2)
-            << ", ";
-  std::cout << "at " << deltatime << " seconds\n";
+  midi_engine->enqueue_message(midi_message);
 }
 
 /** @brief Constructor for the MidiEngine class.
@@ -113,7 +112,7 @@ void MidiEngine::open_input_port(unsigned int port_number)
 
   std::cout << "MIDI input port opened successfully." << std::endl;
   // Set the callback function to handle incoming MIDI messages
-  p_midi_in->setCallback(&midi_callback);
+  p_midi_in->setCallback(&midi_callback, this);
   p_midi_in->ignoreTypes(false, true, true);
 }
 
