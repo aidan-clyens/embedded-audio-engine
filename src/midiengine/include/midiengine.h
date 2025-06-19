@@ -83,6 +83,19 @@ struct MidiMessage
   std::string type_name; // Human-readable name of the MIDI message type
 };
 
+inline std::ostream& operator<<(std::ostream& os, const MidiMessage& msg)
+{
+  os << "MidiMessage { "
+     << "deltatime: " << msg.deltatime
+     << ", status: 0x" << std::hex << static_cast<int>(msg.status) << std::dec
+     << ", type: " << msg.type_name
+     << ", channel: " << static_cast<int>(msg.channel)
+     << ", data1: " << static_cast<int>(msg.data1)
+     << ", data2: " << static_cast<int>(msg.data2)
+     << " }";
+  return os;
+}
+
 /** @class MidiEngine
  *  @brief The MidiEngine class is responsible for managing MIDI input.
  */
@@ -130,6 +143,11 @@ private:
   MidiEngine& operator=(const MidiEngine&) = delete;
 
   void run(); // Thread main loop
+
+  void process_message(const MidiMessage& message);
+  void process_note_on(const MidiMessage& message);
+  void process_note_off(const MidiMessage& message);
+  void process_control_change(const MidiMessage& message);
 
   std::unique_ptr<RtMidiIn> p_midi_in;
 

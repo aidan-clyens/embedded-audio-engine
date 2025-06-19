@@ -170,17 +170,75 @@ void MidiEngine::run() {
     try {
       MidiMessage message = dequeue_message();
       // Process the MIDI message here, or call a user-defined handler
-      std::cout << "[Thread] Received MIDI message: "
-                << "Delta Time: " << message.deltatime
-                << ", Status: " << static_cast<int>(message.status)
-                << ", Type: " << message.type_name
-                << ", Channel: " << static_cast<int>(message.channel)
-                << ", Data1: " << static_cast<int>(message.data1)
-                << ", Data2: " << static_cast<int>(message.data2)
-                << std::endl;
+      std::cout << "[Thread] Received MIDI message: " << message << std::endl;
+      process_message(message);
     } catch (const std::exception&) {
       // No message, sleep briefly
       std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
   }
+}
+
+/** @brief Process a MIDI message.
+ *  This function is called to handle a MIDI message after it has been dequeued.
+ *  It can be overridden by subclasses to implement custom processing logic.
+ *
+ *  @param message The MIDI message to process.
+ */
+void MidiEngine::process_message(const MidiMessage& message)
+{
+  switch (message.type) {
+    case eMidiMessageType::NoteOn:
+      std::cout << "Note On: Channel " << static_cast<int>(message.channel)
+                << ", Note " << static_cast<int>(message.data1)
+                << ", Velocity " << static_cast<int>(message.data2) << std::endl;
+      process_note_on(message);
+      break;
+    case eMidiMessageType::NoteOff:
+      std::cout << "Note Off: Channel " << static_cast<int>(message.channel)
+                << ", Note " << static_cast<int>(message.data1) << std::endl;
+      process_note_off(message);
+      break;
+    case eMidiMessageType::ControlChange:
+      std::cout << "Control Change: Channel " << static_cast<int>(message.channel)
+                << ", Controller " << static_cast<int>(message.data1)
+                << ", Value " << static_cast<int>(message.data2) << std::endl;
+      process_control_change(message);
+      break;
+    default:
+      std::cout << "Unhandled MIDI message type: " << message.type_name << std::endl;
+  }
+}
+
+/** @brief Process a Note On MIDI message.
+ *  This function is called to handle Note On messages specifically.
+ *
+ *  @param message The MIDI message to process.
+ */
+void MidiEngine::process_note_on(const MidiMessage& message)
+{
+  (void)message;
+  // Implement note on processing logic here
+}
+
+/** @brief Process a Note Off MIDI message.
+ *  This function is called to handle Note Off messages specifically.
+ *
+ *  @param message The MIDI message to process.
+ */
+void MidiEngine::process_note_off(const MidiMessage& message)
+{
+  (void)message;
+  // Implement note off processing logic here
+}
+
+/** @brief Process a Control Change MIDI message.
+ *  This function is called to handle Control Change messages specifically.
+ *
+ *  @param message The MIDI message to process.
+ */
+void MidiEngine::process_control_change(const MidiMessage& message)
+{
+  (void)message;
+  // Implement control change processing logic here
 }
