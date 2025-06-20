@@ -1,0 +1,34 @@
+#ifndef __TRACK_H__
+#define __TRACK_H__
+
+#include <queue>
+#include <mutex>
+#include <memory>
+
+#include "observer.h"
+#include "midiengine.h"
+
+namespace Tracks
+{
+
+/** @class Track
+ *  @brief The Track class represents a track in the Digital Audio Workstation.
+ */
+class Track : public Observer<Midi::MidiMessage>, std::enable_shared_from_this<Track>
+{
+public:
+  Track() = default;
+
+  // Observer interface
+  void update(const Midi::MidiMessage& message) override;
+
+  void handle_midi_message();
+
+private:
+  std::queue<Midi::MidiMessage> m_message_queue;
+  std::mutex m_queue_mutex;
+};
+
+}  // namespace Tracks
+
+#endif  // __TRACK_H__

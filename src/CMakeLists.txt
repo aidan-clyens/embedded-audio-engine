@@ -5,4 +5,5 @@ add_executable(DAW
 target_link_libraries(DAW PRIVATE
   audioengine
   midiengine
+  trackmanager
 )

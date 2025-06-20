@@ -6,8 +6,7 @@
 #include <mutex>
 #include <algorithm>
 
-template <typename T>
-class Observer;
+#include "observer.h"
 
 /** @class Subject
  *  @brief The Subject class is part of the Observer design pattern.

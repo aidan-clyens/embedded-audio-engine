@@ -187,58 +187,5 @@ void MidiEngine::run() {
  */
 void MidiEngine::process_message(const MidiMessage& message)
 {
-  switch (message.type) {
-    case eMidiMessageType::NoteOn:
-      std::cout << "Note On: Channel " << static_cast<int>(message.channel)
-                << ", Note " << static_cast<int>(message.data1)
-                << ", Velocity " << static_cast<int>(message.data2) << std::endl;
-      process_note_on(message);
-      break;
-    case eMidiMessageType::NoteOff:
-      std::cout << "Note Off: Channel " << static_cast<int>(message.channel)
-                << ", Note " << static_cast<int>(message.data1) << std::endl;
-      process_note_off(message);
-      break;
-    case eMidiMessageType::ControlChange:
-      std::cout << "Control Change: Channel " << static_cast<int>(message.channel)
-                << ", Controller " << static_cast<int>(message.data1)
-                << ", Value " << static_cast<int>(message.data2) << std::endl;
-      process_control_change(message);
-      break;
-    default:
-      std::cout << "Unhandled MIDI message type: " << message.type_name << std::endl;
-  }
-}
-
-/** @brief Process a Note On MIDI message.
- *  This function is called to handle Note On messages specifically.
- *
- *  @param message The MIDI message to process.
- */
-void MidiEngine::process_note_on(const MidiMessage& message)
-{
-  (void)message;
-  // Implement note on processing logic here
-}
-
-/** @brief Process a Note Off MIDI message.
- *  This function is called to handle Note Off messages specifically.
- *
- *  @param message The MIDI message to process.
- */
-void MidiEngine::process_note_off(const MidiMessage& message)
-{
-  (void)message;
-  // Implement note off processing logic here
-}
-
-/** @brief Process a Control Change MIDI message.
- *  This function is called to handle Control Change messages specifically.
- *
- *  @param message The MIDI message to process.
- */
-void MidiEngine::process_control_change(const MidiMessage& message)
-{
-  (void)message;
-  // Implement control change processing logic here
+  notify(message);
 }

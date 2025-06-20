@@ -148,9 +148,6 @@ private:
   void run(); // Thread main loop
 
   void process_message(const MidiMessage& message);
-  void process_note_on(const MidiMessage& message);
-  void process_note_off(const MidiMessage& message);
-  void process_control_change(const MidiMessage& message);
 
   std::unique_ptr<RtMidiIn> p_midi_in;
 

@@ -1,5 +1,6 @@
 #include "audioengine.h"
 #include "midiengine.h"
+#include "track.h"
 
 #include <iostream>
 #include <csignal>
@@ -50,6 +51,9 @@ int main()
     return 1;
   }
 
+  auto track = std::make_shared<Tracks::Track>();
+  midi_engine.attach(track);
+
   std::signal(SIGINT, signal_handler);
   app_running = true;
 
@@ -57,10 +61,13 @@ int main()
 
   while (app_running)
   {
+    track->handle_midi_message();
+
     // Wait for the signal handler to set app_running to false
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(10));
   }
 
+  midi_engine.detach(track);
   midi_engine.stop();
 
   return 0;
