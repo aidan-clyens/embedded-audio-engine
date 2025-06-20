@@ -12,7 +12,7 @@
 #include <atomic>
 
 #include "subject.h"
-#include "messagequeue.h"
+#include "threadedengine.h"
 
 namespace Midi
 {
@@ -102,7 +102,7 @@ inline std::ostream& operator<<(std::ostream& os, const MidiMessage& msg)
 /** @class MidiEngine
  *  @brief The MidiEngine class is responsible for managing MIDI input.
  */
-class MidiEngine : public Subject<MidiMessage>
+class MidiEngine : public ThreadedEngine<MidiMessage>, public Subject<MidiMessage>
 {
 public:
   static MidiEngine& instance()
@@ -121,27 +121,15 @@ public:
     m_message_queue.push(message);
   }
 
-  // Thread control
-  void start();
-  void stop();
-  bool is_running() const;
-
 private:
   MidiEngine();
-  virtual ~MidiEngine();
-  MidiEngine(const MidiEngine&) = delete;
-  MidiEngine& operator=(const MidiEngine&) = delete;
+  ~MidiEngine() override;
 
-  void run(); // Thread main loop
+  void run() override;
 
   void process_message(const MidiMessage& message);
 
   std::unique_ptr<RtMidiIn> p_midi_in;
-
-  MessageQueue<MidiMessage> m_message_queue;
-
-  std::thread m_thread;
-  std::atomic<bool> m_running{false};
 };
 
 }  // namespace Midi

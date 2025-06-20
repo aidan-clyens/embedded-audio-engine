@@ -9,6 +9,7 @@ target_sources(midiengine
     FILES
       include/midiengine.h
       ../include/subject.h
+      ../include/threadedengine.h
 )
 
 target_sources(midiengine

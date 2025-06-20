@@ -138,31 +138,6 @@ void MidiEngine::close_input_port()
   }
 }
 
-/** @brief Start the MidiEngine thread.
- */
-void MidiEngine::start() {
-  if (m_running) return;
-  m_running = true;
-  m_thread = std::thread(&MidiEngine::run, this);
-}
-
-/** @brief Stop the MidiEngine thread.
- */
-void MidiEngine::stop() {
-  if (!m_running) return;
-  m_running = false;
-  m_message_queue.stop();
-  if (m_thread.joinable()) {
-      m_thread.join();
-  }
-}
-
-/** @brief Check if the MidiEngine is running. 
- */
-bool MidiEngine::is_running() const {
-  return m_running;
-}
-
 /** @brief The main loop of the MidiEngine thread.
  *  This function continuously checks for incoming MIDI messages and processes them.
  */
