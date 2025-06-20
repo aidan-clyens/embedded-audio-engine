@@ -11,6 +11,8 @@
 #include <thread>
 #include <atomic>
 
+#include "subject.h"
+
 namespace Midi
 {
 
@@ -99,12 +101,13 @@ inline std::ostream& operator<<(std::ostream& os, const MidiMessage& msg)
 /** @class MidiEngine
  *  @brief The MidiEngine class is responsible for managing MIDI input.
  */
-class MidiEngine
+class MidiEngine : public Subject<MidiMessage>
 {
 public:
-  static MidiEngine& instance() {
-      static MidiEngine instance;
-      return instance;
+  static MidiEngine& instance()
+  {
+    static MidiEngine instance;
+    return instance;
   }
 
   std::vector<MidiPort> get_ports();
