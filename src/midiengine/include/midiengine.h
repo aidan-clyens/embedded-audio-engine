@@ -12,6 +12,7 @@
 #include <atomic>
 
 #include "subject.h"
+#include "messagequeue.h"
 
 namespace Midi
 {
@@ -115,23 +116,9 @@ public:
   void open_input_port(unsigned int port_number = 0);
   void close_input_port();
 
-  void enqueue_message(const MidiMessage& message)
+  void push_message(const MidiMessage& message)
   {
-    std::lock_guard<std::mutex> lock(m_queue_mutex);
     m_message_queue.push(message);
-  }
-
-  MidiMessage dequeue_message()
-  {
-    std::lock_guard<std::mutex> lock(m_queue_mutex);
-    if (m_message_queue.empty())
-    {
-      throw std::runtime_error("No MIDI messages in the queue");
-    }
-
-    MidiMessage message = m_message_queue.front();
-    m_message_queue.pop();
-    return message;
   }
 
   // Thread control
@@ -151,8 +138,7 @@ private:
 
   std::unique_ptr<RtMidiIn> p_midi_in;
 
-  std::queue<MidiMessage> m_message_queue;
-  std::mutex m_queue_mutex;
+  MessageQueue<MidiMessage> m_message_queue;
 
   std::thread m_thread;
   std::atomic<bool> m_running{false};

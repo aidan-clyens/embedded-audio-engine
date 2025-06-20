@@ -35,7 +35,7 @@ void midi_callback(double deltatime, std::vector<unsigned char> *message, void *
   auto it = midi_message_type_names.find(midi_message.type);
   midi_message.type_name = it != midi_message_type_names.end() ? it->second : "Unknown MIDI Message";
 
-  midi_engine->enqueue_message(midi_message);
+  midi_engine->push_message(midi_message);
 }
 
 /** @brief Constructor for the MidiEngine class.
@@ -151,6 +151,7 @@ void MidiEngine::start() {
 void MidiEngine::stop() {
   if (!m_running) return;
   m_running = false;
+  m_message_queue.stop();
   if (m_thread.joinable()) {
       m_thread.join();
   }
@@ -167,15 +168,10 @@ bool MidiEngine::is_running() const {
  */
 void MidiEngine::run() {
   while (m_running) {
-    try {
-      MidiMessage message = dequeue_message();
-      // Process the MIDI message here, or call a user-defined handler
-      std::cout << "[Thread] Received MIDI message: " << message << std::endl;
-      process_message(message);
-    } catch (const std::exception&) {
-      // No message, sleep briefly
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
+    MidiMessage message = m_message_queue.pop();
+    // Process the MIDI message here, or call a user-defined handler
+    std::cout << "[Thread] Received MIDI message: " << message << std::endl;
+    process_message(message);
   }
 }
 
