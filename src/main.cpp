@@ -1,5 +1,6 @@
 #include "audioengine.h"
 #include "midiengine.h"
+#include "trackmanager.h"
 #include "track.h"
 
 #include <iostream>
@@ -29,6 +30,7 @@ int main()
   std::cout << "Hello, Digital Audio Workstation!" << std::endl;
   
   Midi::MidiEngine& midi_engine = Midi::MidiEngine::instance();
+  Tracks::TrackManager& track_manager = Tracks::TrackManager::instance();
 
   std::vector<Midi::MidiPort> ports = midi_engine.get_ports();
 
@@ -51,13 +53,15 @@ int main()
     return 1;
   }
 
-  auto track = std::make_shared<Tracks::Track>();
-  midi_engine.attach(track);
-
   std::signal(SIGINT, signal_handler);
   app_running = true;
-
+  
   midi_engine.start();
+  track_manager.start();
+  
+  track_manager.add_track();
+  auto track = track_manager.get_track(0);
+  midi_engine.attach(track);
 
   while (app_running)
   {
@@ -69,6 +73,8 @@ int main()
 
   midi_engine.detach(track);
   midi_engine.stop();
+  
+  track_manager.stop();
 
   return 0;
 }

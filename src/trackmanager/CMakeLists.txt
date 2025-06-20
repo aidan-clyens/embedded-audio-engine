@@ -8,11 +8,13 @@ target_sources(trackmanager
       ${CMAKE_CURRENT_SOURCE_DIR}/../include
     FILES
       include/track.h
+      ../include/threadedengine.h
       ../include/observer.h
 )
 
 target_sources(trackmanager
   PRIVATE
+  src/trackmanager.cpp
   src/track.cpp
 )
 
