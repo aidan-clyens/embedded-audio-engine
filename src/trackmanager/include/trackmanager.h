@@ -24,7 +24,7 @@ public:
     return instance;
   }
 
-  void add_track();
+  size_t add_track();
   void remove_track(size_t index);
   std::shared_ptr<Track> get_track(size_t index) const;
 

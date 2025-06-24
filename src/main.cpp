@@ -59,8 +59,8 @@ int main()
   midi_engine.start();
   track_manager.start();
   
-  track_manager.add_track();
-  auto track = track_manager.get_track(0);
+  size_t track_index = track_manager.add_track();
+  auto track = track_manager.get_track(track_index);
   midi_engine.attach(track);
 
   while (app_running)
@@ -75,6 +75,7 @@ int main()
   midi_engine.stop();
   
   track_manager.stop();
+  track_manager.clear_tracks();
 
   return 0;
 }

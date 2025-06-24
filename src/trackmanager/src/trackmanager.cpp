@@ -3,11 +3,13 @@
 using namespace Tracks;
 
 /** @brief Add a Track to the TrackManager.
+ *  @return The index of the newly added track.
  */
-void TrackManager::add_track()
+size_t TrackManager::add_track()
 {
   auto new_track = std::make_shared<Track>();
   m_tracks.push_back(new_track);
+  return m_tracks.size() - 1; // Return the index of the newly added track
 }
 
 /** @brief Remove a Track from the TrackManager by index.
