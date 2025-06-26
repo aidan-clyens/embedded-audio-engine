@@ -7,6 +7,7 @@ target_sources(midiengine
       ${CMAKE_CURRENT_SOURCE_DIR}/include
       ${CMAKE_CURRENT_SOURCE_DIR}/../include
     FILES
+      include/miditypes.h
       include/midiengine.h
       ../include/subject.h
       ../include/threadedengine.h
