@@ -1,7 +1,7 @@
 #ifndef _MIDI_ENGINE_H
 #define _MIDI_ENGINE_H
 
-#include <RtMidi.h>
+#include <rtmidi/RtMidi.h>
 #include <memory>
 #include <vector>
 
