@@ -142,7 +142,8 @@ void MidiEngine::close_input_port()
  *  This function continuously checks for incoming MIDI messages and processes them.
  */
 void MidiEngine::run() {
-  while (m_running) {
+  while (m_running)
+  {
     MidiMessage message = m_message_queue.pop();
     // Process the MIDI message here, or call a user-defined handler
     std::cout << "[Thread] Received MIDI message: " << message << std::endl;

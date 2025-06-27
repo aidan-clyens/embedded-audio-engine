@@ -52,3 +52,12 @@ void Track::handle_midi_message()
       break;
   }
 }
+
+/** @brief Fill the audio output buffer with the next available data
+ *  @param output_buffer Pointer to the output buffer where audio data will be written.
+ *  @param n_frames Number of frames to fill in the output buffer.
+ */
+void Track::get_next_audio_frame(float *output_buffer, unsigned int n_frames)
+{
+  
+}

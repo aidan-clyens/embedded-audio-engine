@@ -24,6 +24,8 @@ public:
 
   void handle_midi_message();
 
+  void get_next_audio_frame(float *output_buffer, unsigned int n_frames);
+
 private:
   std::queue<Midi::MidiMessage> m_message_queue;
   std::mutex m_queue_mutex;

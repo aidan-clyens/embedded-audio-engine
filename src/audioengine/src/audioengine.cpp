@@ -1,42 +1,12 @@
 #include "audioengine.h"
+#include "trackmanager.h"
+
 #include <stdexcept>
 #include <thread>
 #include <sndfile.h>
 #include <iostream>
 
 using namespace Audio;
-
-/** @brief Called by the audio device to play audio data
- *  This function is called by the audio device to fill the output buffer with audio data.
- *  @param outputBuffer Pointer to the output buffer where audio data should be written
- *  @param inputBuffer Pointer to the input buffer (not used in this case)
- *  @param nFrames Number of frames to process
- *  @param streamTime Current stream time (not used in this case)
- *  @param status Stream status (not used in this case)
- *  @param userData Pointer to user data (in this case, a vector of audio data)
- *  @return 0 on success, non-zero on error
- */
-int audio_callback(void* outputBuffer, void* inputBuffer, unsigned int nFrames,
-                  double streamTime, RtAudioStreamStatus status, void* userData)
-{
-  std::vector<float> *audio_data = static_cast<std::vector<float>*>(userData);
-  static size_t pos = 0;
-  float *out = static_cast<float*>(outputBuffer);
-
-  for (unsigned int i = 0; i < nFrames; ++i)
-  {
-    if (pos < audio_data->size())
-    {
-      out[i] = (*audio_data)[pos++];
-    }
-    else
-    {
-      out[i] = 0.0f; // Fill with silence if we run out of data
-    }
-  }
-
-  return 0;
-}
 
 /** @brief AudioEngine constructor
  */
@@ -83,45 +53,43 @@ void AudioEngine::run()
   }
 }
 
-/** @brief Open an audio input file
- *  @param filename The path to the audio file to open
- *  @throws std::runtime_error if the file cannot be opened
+/** @brief Process audio for the current tracks in the Track Manager
+ *  @param output_buffer Pointer to the output audio buffer
+ *  @param n_frames Number of frames to process
  */
-void AudioEngine::open_input_file(const std::string& filename, unsigned int audio_device)
+void AudioEngine::process_audio(float *output_buffer, unsigned int n_frames)
 {
-  if (p_audio_in->isStreamOpen())
+  Tracks::TrackManager &track_manager = Tracks::TrackManager::instance();
+ 
+  std::vector<std::vector<float>> track_buffers(track_manager.get_track_count(), std::vector<float>(n_frames, 0.0f));
+  for (size_t i = 0; i < track_manager.get_track_count(); ++i)
   {
-    p_audio_in->closeStream();
+    std::shared_ptr<Tracks::Track>track = track_manager.get_track(i);
+    track->get_next_audio_frame(track_buffers[i].data(), n_frames);
   }
 
-  // Open the audio file
-  SF_INFO sfinfo;
-  SNDFILE* infile = sf_open(filename.c_str(), SFM_READ, &sfinfo);
-  if (!infile)
+  // TODO - Send to Audio Mixer
+}
+
+/** @brief Audio callback function
+ *  @param output_buffer Pointer to the output audio buffer
+ *  @param input_buffer Pointer to the input audio buffer (not used here)
+ *  @param n_frames Number of frames to process
+ *  @param stream_time Current stream time
+ *  @param status Stream status
+ *  @param user_data User data pointer (should be AudioEngine instance)
+ *  @return 0 on success, non-zero on error
+ */
+int AudioEngine::audio_callback(void *output_buffer, void *input_buffer, unsigned int n_frames,
+                                 double stream_time, RtAudioStreamStatus status, void *user_data)
+{
+  AudioEngine *engine = static_cast<AudioEngine*>(user_data);
+  if (!engine)
   {
-    throw std::runtime_error("Failed to open audio file " + filename + "(" + sf_strerror(nullptr) + ")");
+    std::cerr << "AudioEngine pointer is null in callback" << std::endl;
+    return 1; // Error code
   }
 
-  std::vector<float> audio_data = std::vector<float>(sfinfo.frames * sfinfo.channels);
-  sf_readf_float(infile, audio_data.data(), sfinfo.frames);
-  sf_close(infile);
-
-  // Open the audio stream
-  RtAudio::StreamParameters parameters;
-  parameters.deviceId = audio_device;
-  parameters.nChannels = sfinfo.channels;
-
-  unsigned int sample_rate = sfinfo.samplerate;
-  unsigned int buffer_frames = 256;
-
-  try
-  {
-    p_audio_in->openStream(nullptr, &parameters, RTAUDIO_FLOAT32, sample_rate, &buffer_frames, 
-                           &audio_callback, &audio_data);
-    p_audio_in->startStream();
-  }
-  catch (const RtAudioError& e)
-  {
-    throw std::runtime_error("Failed to open audio stream: " + std::string(e.getMessage()));
-  }
+  engine->process_audio(static_cast<float*>(output_buffer), n_frames);
+  return 0;
 }

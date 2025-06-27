@@ -29,9 +29,11 @@ int main()
 {
   std::cout << "Hello, Digital Audio Workstation!" << std::endl;
   
+  Audio::AudioEngine& audio_engine = Audio::AudioEngine::instance();
   Midi::MidiEngine& midi_engine = Midi::MidiEngine::instance();
   Tracks::TrackManager& track_manager = Tracks::TrackManager::instance();
 
+  // Return a list of supported MIDI devices
   std::vector<Midi::MidiPort> ports = midi_engine.get_ports();
 
   for (const auto& port : ports)
@@ -44,6 +46,7 @@ int main()
   std::cout << "Enter a port number to use: ";
   std::cin >> selected_port;
 
+  // Open selected MIDI device
   try
   {
     midi_engine.open_input_port(selected_port);
@@ -56,6 +59,7 @@ int main()
   std::signal(SIGINT, signal_handler);
   app_running = true;
   
+  audio_engine.start();
   midi_engine.start();
   track_manager.start();
   
@@ -76,6 +80,8 @@ int main()
   
   track_manager.stop();
   track_manager.clear_tracks();
+
+  audio_engine.stop();
 
   return 0;
 }
