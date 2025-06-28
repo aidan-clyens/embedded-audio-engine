@@ -1,4 +1,4 @@
-add_library(trackmanager)
+add_library(trackmanager STATIC)
 
 target_sources(trackmanager
   PUBLIC
@@ -26,4 +26,5 @@ target_include_directories(trackmanager
 
 target_link_libraries(trackmanager PUBLIC
   midiengine
+  audioengine
 )

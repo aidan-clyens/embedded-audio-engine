@@ -10,6 +10,14 @@
 namespace Audio
 {
 
+enum eAudioEngineState
+{
+  AUDIO_ENGINE_STATE_IDLE,
+  AUDIO_ENGINE_STATE_INIT,
+  AUDIO_ENGINE_STATE_STOPPED,
+  AUDIO_ENGINE_STATE_RUNNING,
+};
+
 struct AudioMessage
 {
 
@@ -38,11 +46,14 @@ private:
   void process_audio(float *output_buffer, unsigned int n_frames);
 
   void run() override;
+  void update_state();
 
   static int audio_callback(void *output_buffer, void *input_buffer, unsigned int n_frames,
                      double stream_time, RtAudioStreamStatus status, void *user_data);
 
   std::unique_ptr<RtAudio> p_audio_in;
+
+  eAudioEngineState m_state;
 };
 
 }  // namespace Audio

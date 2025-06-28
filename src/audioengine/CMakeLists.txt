@@ -1,7 +1,4 @@
-add_library(audioengine STATIC
-  include/audioengine.h
-  src/audioengine.cpp
-)
+add_library(audioengine STATIC)
 
 target_sources(audioengine
   PUBLIC
@@ -11,7 +8,7 @@ target_sources(audioengine
       ${CMAKE_CURRENT_SOURCE_DIR}/../include
     FILES
       include/audioengine.h
-      include/audiodevice.h
+      include/audiosource.h
       ../include/threadedengine.h
 
 )

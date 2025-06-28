@@ -49,7 +49,27 @@ void AudioEngine::run()
 {
   while (m_running)
   {
+    update_state();
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  }
+}
+
+/** @brief The Audio Engine application state machine
+ */
+void AudioEngine::update_state()
+{
+  switch (m_state)
+  {
+    case AUDIO_ENGINE_STATE_INIT:
+      break;
+    case AUDIO_ENGINE_STATE_IDLE:
+      break;
+    case AUDIO_ENGINE_STATE_STOPPED:
+      break;
+    case AUDIO_ENGINE_STATE_RUNNING:
+      break;
+    default:
+      throw std::runtime_error("Unknown Audio Engine state");
   }
 }
 
