@@ -15,17 +15,22 @@ RUN apt-get update && \
         wget \
         curl \
         ca-certificates \
+        openssh-client \
+        alsa-utils \
     && rm -rf /var/lib/apt/lists/*
 
 # Install project dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         librtmidi-dev \
-        librtaudio-dev
+        librtaudio-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Configure ALSA to use the null device for audio simulation
+RUN echo 'pcm.!default {\n    type null\n}' > /root/.asoundrc
+
 # Set working directory
-WORKDIR /workspace
+WORKDIR /workspace/DAW
 
 # Default command
 CMD ["/bin/bash"]
