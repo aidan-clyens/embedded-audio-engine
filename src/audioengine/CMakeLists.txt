@@ -23,6 +23,5 @@ target_include_directories(audioengine
 
 target_link_libraries(audioengine PUBLIC
   rtaudio
-  sndfile
   trackmanager
 )

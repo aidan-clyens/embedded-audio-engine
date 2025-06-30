@@ -3,7 +3,6 @@
 
 #include <stdexcept>
 #include <thread>
-#include <sndfile.h>
 #include <iostream>
 
 using namespace Audio;
