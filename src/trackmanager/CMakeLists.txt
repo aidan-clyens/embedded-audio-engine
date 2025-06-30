@@ -5,11 +5,8 @@ target_sources(trackmanager
   FILE_SET HEADERS
     BASE_DIRS
       ${CMAKE_CURRENT_SOURCE_DIR}/include
-      ${CMAKE_CURRENT_SOURCE_DIR}/../include
     FILES
       include/track.h
-      ../include/threadedengine.h
-      ../include/observer.h
 )
 
 target_sources(trackmanager
@@ -21,10 +18,10 @@ target_sources(trackmanager
 target_include_directories(trackmanager
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>
 )
 
 target_link_libraries(trackmanager PUBLIC
+  framework
   midiengine
   audioengine
 )
