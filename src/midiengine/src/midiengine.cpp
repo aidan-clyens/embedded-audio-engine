@@ -1,5 +1,7 @@
 #include "midiengine.h"
+#include "alsa_utils.h"
 
+#include <rtmidi/RtMidi.h>
 #include <iostream>
 #include <stdexcept>
 #include <cassert>
@@ -42,6 +44,13 @@ void midi_callback(double deltatime, std::vector<unsigned char> *message, void *
  */
 MidiEngine::MidiEngine()
 {
+  if (!is_alsa_seq_available())
+  {
+    std::cout << "ALSA sequencer not available, skipping MIDI input initialization." << std::endl;
+    p_midi_in = nullptr;
+    return;
+  }
+
   p_midi_in = std::make_unique<RtMidiIn>();
   if (!p_midi_in)
   {

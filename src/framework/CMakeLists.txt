@@ -1,4 +1,4 @@
-add_library(framework INTERFACE)
+add_library(framework STATIC)
 
 target_sources(framework
   PUBLIC
@@ -6,14 +6,17 @@ target_sources(framework
     BASE_DIRS
       ${CMAKE_CURRENT_SOURCE_DIR}/include
     FILES
+      include/alsa_utils.h
       include/messagequeue.h
       include/observer.h
       include/subject.h
       include/threadedengine.h
 )
 
+target_sources(framework PRIVATE src/alsa_utils.cpp)
+
 target_include_directories(framework
-  INTERFACE
+  PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
 )
 

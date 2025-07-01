@@ -1,13 +1,14 @@
 #ifndef _MIDI_ENGINE_H
 #define _MIDI_ENGINE_H
 
-#include <rtmidi/RtMidi.h>
 #include <memory>
 #include <vector>
 
 #include "miditypes.h"
 #include "subject.h"
 #include "threadedengine.h"
+
+class RtMidiIn;  // Forward declaration for RtMidiIn class
 
 namespace Midi
 {

@@ -1,6 +1,8 @@
 #include "audioengine.h"
 #include "trackmanager.h"
+#include "alsa_utils.h"
 
+#include <cassert>
 #include <stdexcept>
 #include <thread>
 #include <iostream>
@@ -11,6 +13,13 @@ using namespace Audio;
  */
 AudioEngine::AudioEngine()
 {
+  if (!is_alsa_seq_available())
+  {
+    std::cout << "ALSA sequencer not available, skipping audio input initialization." << std::endl;
+    p_audio_in = nullptr;
+    return;
+  }
+
   // Set up RtAudio
   p_audio_in = std::make_unique<RtAudio>();
   if (!p_audio_in)
@@ -31,6 +40,8 @@ AudioEngine::~AudioEngine()
  */
 std::vector<RtAudio::DeviceInfo> AudioEngine::get_devices()
 {
+  assert(p_audio_in != nullptr && "Audio input instance is not initialized");
+
   std::vector<RtAudio::DeviceInfo> devices;
   for (unsigned int i = 0; i < p_audio_in->getDeviceCount(); i++)
   {
