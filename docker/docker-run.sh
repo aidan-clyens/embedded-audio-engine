@@ -1,4 +1,4 @@
-docker run -it --rm --platform=linux/arm64 \
+docker run -it --rm --init --platform=linux/arm64 \
     --name arm64-audio \
     -v "$(pwd):/home/$(whoami)/DAW" \
     -v "/home/$(whoami)/.ssh:/root/.ssh" \
