@@ -23,6 +23,19 @@ RUN apt-get install -y --no-install-recommends \
     librtmidi-dev \
     librtaudio-dev
 
+# Install python and pip
+RUN apt-get install -y --no-install-recommends \
+    python3 \
+    python3-pip \
+    python3-venv
+
+# Configure python environment
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+RUN pip3 install --upgrade pip
+RUN pip3 install python-rtmidi
+
 # Configure ALSA to use the null device for audio simulation
 RUN echo 'pcm.!default {\n    type null\n}' > /root/.asoundrc
 
