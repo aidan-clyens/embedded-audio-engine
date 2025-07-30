@@ -22,24 +22,22 @@ void signal_handler(int signum)
   app_running = false;
 }
 
-/** @brief Main function for the Digital Audio Workstation application.
- *  @return Exit status of the application (0 for success, non-zero for failure).
+/** @brief Opens a MIDI input device.
+ *  This function lists available MIDI ports, prompts the user to select one,
+ *  and attempts to open the selected MIDI input port.
+ *  @return True if the MIDI device was opened successfully, false otherwise.
  */
-int main()
+bool open_midi_device()
 {
-  std::cout << "Hello, Digital Audio Workstation!" << std::endl;
-  
-  Audio::AudioEngine& audio_engine = Audio::AudioEngine::instance();
   Midi::MidiEngine& midi_engine = Midi::MidiEngine::instance();
-  Tracks::TrackManager& track_manager = Tracks::TrackManager::instance();
 
   // Return a list of supported MIDI devices
   std::vector<Midi::MidiPort> ports = midi_engine.get_ports();
 
+  std::cout << "---------------------" << std::endl;
   for (const auto& port : ports)
   {
-    std::cout << "Port Number: " << port.port_number 
-              << ", Port Name: " << port.port_name << std::endl;
+    std::cout << port.port_number << " - " << port.port_name << std::endl;
   }
 
   unsigned int selected_port;
@@ -53,6 +51,50 @@ int main()
     std::cout << "Opened MIDI input port: " << selected_port << std::endl;
   } catch (const std::exception& e) {
     std::cerr << "Error opening MIDI input port: " << e.what() << std::endl;
+    return false;
+  }
+
+  return true;
+}
+
+/** @brief Main function for the Digital Audio Workstation application.
+ *  @return Exit status of the application (0 for success, non-zero for failure).
+ */
+int main()
+{
+  Audio::AudioEngine& audio_engine = Audio::AudioEngine::instance();
+  Midi::MidiEngine& midi_engine = Midi::MidiEngine::instance();
+  Tracks::TrackManager& track_manager = Tracks::TrackManager::instance();
+  
+  std::cout << "Embedded Audio Engine" << std::endl;
+  std::cout << "---------------------" << std::endl;
+
+  std::cout << "Select audio or MIDI input device..." << std::endl;
+  std::cout << "1 - Audio Input" << std::endl;
+  std::cout << "2 - MIDI Input" << std::endl;
+  std::cout << "3 - Sample File" << std::endl;
+  std::cout << "Enter your choice (1-3): ";
+  int choice;
+  std::cin >> choice;
+
+  std::cout << std::endl;
+
+  if (choice == 1)
+  {
+    std::cout << "Using audio input device." << std::endl;
+  }
+  else if (choice == 2)
+  {
+    std::cout << "Using MIDI input device." << std::endl;
+    open_midi_device();
+  }
+  else if (choice == 3)
+  {
+    std::cout << "Using sample file input." << std::endl;
+  }
+  else
+  {
+    std::cerr << "Invalid choice. Exiting." << std::endl;
     return 1;
   }
 
