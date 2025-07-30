@@ -1,0 +1,2 @@
+PyAudio==0.2.14
+python-rtmidi==1.5.8
