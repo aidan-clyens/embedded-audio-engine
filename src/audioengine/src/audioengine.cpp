@@ -77,6 +77,7 @@ void AudioEngine::update_state()
     case AUDIO_ENGINE_STATE_STOPPED:
       break;
     case AUDIO_ENGINE_STATE_RUNNING:
+      update_state_running();
       break;
     default:
       throw std::runtime_error("Unknown Audio Engine state");
@@ -90,7 +91,11 @@ void AudioEngine::update_state()
 void AudioEngine::process_audio(float *output_buffer, unsigned int n_frames)
 {
   Tracks::TrackManager &track_manager = Tracks::TrackManager::instance();
- 
+
+  // Update statistics
+  m_statistics.tracks_playing = track_manager.get_track_count();
+  m_statistics.total_frames_processed += n_frames;
+
   std::vector<std::vector<float>> track_buffers(track_manager.get_track_count(), std::vector<float>(n_frames, 0.0f));
   for (size_t i = 0; i < track_manager.get_track_count(); ++i)
   {

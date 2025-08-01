@@ -18,7 +18,8 @@ apt-get install -y --no-install-recommends \
 apt-get install -y --no-install-recommends \
     librtmidi-dev \
     librtaudio-dev \
-    portaudio19-dev
+    portaudio19-dev \
+    libgtest-dev
 
 # Install python and pip
 apt-get install -y --no-install-recommends \
