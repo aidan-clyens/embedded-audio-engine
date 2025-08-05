@@ -29,6 +29,9 @@ TEST(TrackManagerIntegrationTest, SingleTrack)
   std::cout << "Tracks playing: " << stats.tracks_playing << std::endl;
   std::cout << "Total frames processed: " << stats.total_frames_processed << std::endl;
 
+  // Open a test WAV file and load it into the track
+  std::string test_wav_file = "test_audio.wav"; // Ensure this file exists
+
   // Stop the audio engine and track manager
   audio_engine.stop();
   track_manager.stop();

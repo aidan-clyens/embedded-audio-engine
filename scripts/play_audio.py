@@ -18,7 +18,7 @@ def callback(in_data, frame_count, time_info, status):
     return (data, pyaudio.paContinue)
 
 # Open the WAV file
-wf = wave.open('test.wav', 'rb')
+wf = wave.open('../samples/test.wav', 'rb')
 
 # Create a PyAudio instance
 p = pyaudio.PyAudio()
