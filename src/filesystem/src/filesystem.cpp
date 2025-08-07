@@ -12,8 +12,7 @@ std::vector<std::filesystem::path> FileSystem::list_directory(const std::filesys
 {
   std::vector<std::filesystem::path> contents;
 
-  // If the path is relative, concatenate it with the working directory
-  std::filesystem::path absolute_path = path.is_relative() ? std::filesystem::current_path() / path.lexically_normal() : path.lexically_normal();
+  std::filesystem::path absolute_path = convert_to_absolute(path);
 
   if (!path_exists(absolute_path) || !is_directory(absolute_path))
   {
@@ -78,7 +77,7 @@ void FileSystem::save_to_wav_file(std::vector<float> audio_buffer, const std::fi
  */
 WavFile FileSystem::read_wav_file(const std::filesystem::path &path)
 {
-  std::filesystem::path absolute_path = path.is_relative() ? std::filesystem::current_path() / path.lexically_normal() : path.lexically_normal();
+  std::filesystem::path absolute_path = convert_to_absolute(path);
 
   if (!path_exists(absolute_path) || !is_wav_file(absolute_path))
   {

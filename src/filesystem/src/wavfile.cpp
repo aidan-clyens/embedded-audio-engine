@@ -8,6 +8,8 @@ using namespace Files;
  */
 WavFile::WavFile(const std::filesystem::path &path)
 {
+  m_filepath = path;
+
   m_sndfile = std::shared_ptr<SNDFILE>(
       sf_open(path.string().c_str(), SFM_READ, &m_sfinfo),
       [](SNDFILE *f)

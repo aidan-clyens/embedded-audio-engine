@@ -117,4 +117,9 @@ TEST(FileSystemTest, LoadWavFile)
 
   // Load the WAV file
   WavFile file = fs.read_wav_file(wav_file_path);
+
+  ASSERT_EQ(file.get_filepath(), fs.convert_to_absolute(wav_file_path)) << "Loaded WAV file path should match the original path.";
+
+  ASSERT_TRUE(fs.path_exists(file.get_filepath())) << "Loaded file should exist.";
+  ASSERT_TRUE(fs.is_wav_file(file.get_filepath())) << "Loaded file should be a WAV file.";
 }

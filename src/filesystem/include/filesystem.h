@@ -71,6 +71,15 @@ public:
     return (path_exists(path) && std::filesystem::is_directory(path));
   }
 
+  /** @brief Converts a relative path to an absolute path.
+   *  @param path The path to convert.
+   *  @return The absolute path.
+   */
+  std::filesystem::path convert_to_absolute(const std::filesystem::path &path) const
+  {
+    return path.is_relative() ? std::filesystem::current_path() / path.lexically_normal() : path;
+  }
+
 	void save_to_wav_file(std::vector<float> audio_buffer, const std::filesystem::path &path);
   WavFile read_wav_file(const std::filesystem::path &path);
 
