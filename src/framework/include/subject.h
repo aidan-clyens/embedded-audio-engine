@@ -1,4 +1,4 @@
-#ifndef __SUBJECT_H_
+#ifndef __SUBJECT_H__
 #define __SUBJECT_H__
 
 #include <memory>

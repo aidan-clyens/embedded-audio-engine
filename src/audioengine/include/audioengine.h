@@ -3,8 +3,10 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 #include <rtaudio/RtAudio.h>
 
+#include "subject.h"
 #include "threadedengine.h"
 
 namespace Audio
@@ -32,7 +34,7 @@ struct AudioEngineStatistics
 /** @class AudioEngine
  *  @brief 
  */
-class AudioEngine : public ThreadedEngine<AudioMessage>
+class AudioEngine : public ThreadedEngine<AudioMessage>, public Subject<AudioMessage>
 {
 public:
   static AudioEngine& instance()

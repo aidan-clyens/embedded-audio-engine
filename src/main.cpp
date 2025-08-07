@@ -107,7 +107,10 @@ int main()
   
   size_t track_index = track_manager.add_track();
   auto track = track_manager.get_track(track_index);
+  
+  // Attach track as observer to both engines
   midi_engine.attach(track);
+  audio_engine.attach(track);
 
   while (app_running)
   {

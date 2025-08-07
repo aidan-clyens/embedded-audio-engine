@@ -1,5 +1,4 @@
 #include "audioengine.h"
-#include "trackmanager.h"
 #include "alsa_utils.h"
 
 #include <cassert>
@@ -90,20 +89,16 @@ void AudioEngine::update_state()
  */
 void AudioEngine::process_audio(float *output_buffer, unsigned int n_frames)
 {
-  Tracks::TrackManager &track_manager = Tracks::TrackManager::instance();
+  // Clear output buffer as tracks will accumulate into it
+  std::fill(output_buffer, output_buffer + n_frames, 0.0f);
+
+  // Create audio message to notify observers (tracks)
+  AudioMessage message;
+  // Notify all observers (tracks) to process their audio
+  notify(message);
 
   // Update statistics
-  m_statistics.tracks_playing = track_manager.get_track_count();
   m_statistics.total_frames_processed += n_frames;
-
-  std::vector<std::vector<float>> track_buffers(track_manager.get_track_count(), std::vector<float>(n_frames, 0.0f));
-  for (size_t i = 0; i < track_manager.get_track_count(); ++i)
-  {
-    std::shared_ptr<Tracks::Track>track = track_manager.get_track(i);
-    track->get_next_audio_frame(track_buffers[i].data(), n_frames);
-  }
-
-  // TODO - Send to Audio Mixer
 }
 
 /** @brief Audio callback function

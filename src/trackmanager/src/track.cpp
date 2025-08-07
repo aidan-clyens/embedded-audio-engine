@@ -1,5 +1,7 @@
 #include "track.h"
 
+#include "audioengine.h"
+
 #include <iostream>
 
 using namespace Tracks;
@@ -12,6 +14,15 @@ void Track::update(const Midi::MidiMessage& message)
 {
   std::lock_guard<std::mutex> lock(m_queue_mutex);
   m_message_queue.push(message);
+}
+
+/** @brief Updates the track with a new audio message.
+ *  This function is called by the AudioEngine when a new audio message is received.
+ *  @param message The audio message to process.
+ */
+void Track::update(const Audio::AudioMessage &message)
+{
+  (void)message;
 }
 
 /** @brief Handles a MIDI message.
