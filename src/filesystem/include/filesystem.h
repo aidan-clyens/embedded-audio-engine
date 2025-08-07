@@ -29,13 +29,8 @@ public:
     static FileSystem instance;
     return instance;
   }
-  
-  void set_working_directory(const std::string &path);
-  void set_working_directory(const std::filesystem::path &path);
-  std::filesystem::path get_working_directory() const;
 
 	std::vector<std::filesystem::path> list_directory(const std::filesystem::path &path, PathType type = PathType::All);
-
 	std::vector<std::filesystem::path> list_wav_files_in_directory(const std::filesystem::path &path);
 
   /** @brief Checks if a specified path exists.
@@ -81,11 +76,8 @@ private:
   FileSystem() = default;
   virtual ~FileSystem() = default;
 
-  // Disable copy and assignment
   FileSystem(const FileSystem&) = delete;
   FileSystem& operator=(const FileSystem&) = delete;
-
-	std::filesystem::path m_working_directory;
 };
 
 }  // namespace Files

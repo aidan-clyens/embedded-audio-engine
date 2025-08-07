@@ -4,42 +4,6 @@
 
 using namespace Files;
 
-/** @brief Sets the working directory to the specified path.
- *  @param path The path to set as the working directory.
- *  @throws std::runtime_error if the path is invalid. 
- */
-void FileSystem::set_working_directory(const std::string &path)
-{
-  if (!path_exists(std::filesystem::path(path)) || !is_directory(std::filesystem::path(path)))
-  {
-    throw std::runtime_error("Invalid working directory path: " + path);
-  }
-
-  m_working_directory = std::filesystem::path(path);
-}
-
-/** @brief Sets the working directory to the specified filesystem path.
- *  @param path The filesystem path to set as the working directory.
- *  @throws std::runtime_error if the path is invalid.
- */
-void FileSystem::set_working_directory(const std::filesystem::path &path)
-{
-  if (!path_exists(path) || !is_directory(path))
-  {
-    throw std::runtime_error("Invalid working directory path: " + path.string());
-  }
-
-  m_working_directory = path;
-}
-
-/** @brief Gets the current working directory.
- *  @return The current working directory as a filesystem path.
- */
-std::filesystem::path FileSystem::get_working_directory() const
-{
-  return m_working_directory;
-}
-
 /** @brief Lists the contents of a directory.
  *  @param path The path to the directory to list.
  *  @param type The type of contents to list (directories, files, or all).
@@ -50,25 +14,30 @@ std::vector<std::filesystem::path> FileSystem::list_directory(const std::filesys
 {
   std::vector<std::filesystem::path> contents;
 
-  if (!path_exists(path) || !is_directory(path))
+  // If the path is relative, concatenate it with the working directory
+  std::filesystem::path absolute_path = path.is_relative() ? std::filesystem::current_path() / path.lexically_normal() : path.lexically_normal();
+
+  if (!path_exists(absolute_path) || !is_directory(absolute_path))
   {
-    throw std::runtime_error("Path does not exist or is not a directory: " + path.string());
+    throw std::runtime_error("Path does not exist or is not a directory: " + absolute_path.string());
   }
 
-  for (const auto& entry : std::filesystem::directory_iterator(path))
+  for (const auto& entry : std::filesystem::directory_iterator(absolute_path))
   {
+    std::filesystem::path entry_path = entry.path().lexically_normal();
+
     switch (type)
     {
       case PathType::Directory:
-        if (is_directory(entry.path()))
-          contents.push_back(entry.path());
+        if (is_directory(entry_path))
+          contents.push_back(entry_path);
         break;
       case PathType::File:
-        if (is_file(entry.path()))
-          contents.push_back(entry.path());
+        if (is_file(entry_path))
+          contents.push_back(entry_path);
         break;
       case PathType::All:
-        contents.push_back(entry.path());
+        contents.push_back(entry_path);
         break;
       default:
         throw std::invalid_argument("Invalid PathType specified.");
@@ -85,22 +54,18 @@ std::vector<std::filesystem::path> FileSystem::list_directory(const std::filesys
  */
 std::vector<std::filesystem::path> FileSystem::list_wav_files_in_directory(const std::filesystem::path &path)
 {
-  std::vector<std::filesystem::path> contents;
+  std::vector<std::filesystem::path> contents = list_directory(path, PathType::File);
+  std::vector<std::filesystem::path> wav_files;
 
-  if (!path_exists(path) || !is_directory(path))
+  for (const auto& entry : contents)
   {
-    throw std::runtime_error("Path does not exist or is not a directory: " + path.string());
-  }
-
-  for (const auto& entry : std::filesystem::directory_iterator(path))
-  {
-    if (is_wav_file(entry.path()))
+    if (is_wav_file(entry))
     {
-      contents.push_back(entry.path());
+      wav_files.push_back(entry);
     }
   }
 
-  return contents;
+  return wav_files;
 }
 
 void FileSystem::save_to_wav_file(std::vector<float> audio_buffer, const std::filesystem::path &path)
