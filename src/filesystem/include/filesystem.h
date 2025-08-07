@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 
+#include "wavfile.h"
+
 namespace Files
 {
 
@@ -70,7 +72,7 @@ public:
   }
 
 	void save_to_wav_file(std::vector<float> audio_buffer, const std::filesystem::path &path);
-  std::vector<float> load_from_wav_file(const std::filesystem::path &path);
+  WavFile read_wav_file(const std::filesystem::path &path);
 
 private:
   FileSystem() = default;

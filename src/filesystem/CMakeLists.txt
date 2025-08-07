@@ -7,9 +7,13 @@ target_sources(filesystem
       ${CMAKE_CURRENT_SOURCE_DIR}/include
     FILES
       include/filesystem.h
+      include/wavfile.h
 )
 
-target_sources(filesystem PRIVATE src/filesystem.cpp)
+target_sources(filesystem PRIVATE
+  src/filesystem.cpp
+  src/wavfile.cpp
+)
 
 target_include_directories(filesystem
   PUBLIC

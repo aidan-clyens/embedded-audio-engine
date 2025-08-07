@@ -116,5 +116,5 @@ TEST(FileSystemTest, LoadWavFile)
   ASSERT_TRUE(fs.path_exists(wav_file_path)) << "WAV file should exist.";
 
   // Load the WAV file
-  fs.load_from_wav_file(wav_file_path);
+  WavFile file = fs.read_wav_file(wav_file_path);
 }
