@@ -4,6 +4,7 @@
 #include <queue>
 #include <mutex>
 #include <memory>
+#include <optional>
 
 #include "observer.h"
 #include "midiengine.h"
@@ -21,12 +22,22 @@ namespace Tracks
  *  @brief The Track class represents a track in the Digital Audio Workstation.
  */
 class Track : public Observer<Midi::MidiMessage>, 
-                  public Observer<Audio::AudioMessage>,
-                  public Audio::IAudioSource, 
-                  public std::enable_shared_from_this<Track>
+          public Observer<Audio::AudioMessage>,
+          public Audio::IAudioSource, 
+          public std::enable_shared_from_this<Track>
 {
 public:
   Track() = default;
+
+  void add_audio_input(const unsigned int device_index = 0);
+  void add_midi_input() {}
+  void add_audio_output() {}
+
+  bool has_audio_input() const { return m_audio_input_device_index.has_value(); }
+  bool has_midi_input() const { return false; }
+  bool has_audio_output() const { return false; }
+
+  unsigned int get_audio_input() const { return m_audio_input_device_index.value_or(std::numeric_limits<unsigned int>::max()); }
 
   // Observer interface
   void update(const Midi::MidiMessage& message) override;
@@ -39,6 +50,8 @@ public:
 private:
   std::queue<Midi::MidiMessage> m_message_queue;
   std::mutex m_queue_mutex;
+
+  std::optional<unsigned int> m_audio_input_device_index;
 };
 
 }  // namespace Tracks

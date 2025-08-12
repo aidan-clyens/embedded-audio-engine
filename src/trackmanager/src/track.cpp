@@ -3,8 +3,39 @@
 #include "audioengine.h"
 
 #include <iostream>
+#include <stdexcept>
 
 using namespace Tracks;
+
+/** @brief Adds an audio input to the track.
+ *  @param device_index The index of the audio input device. Defaults to 0 (the default input device).
+ */
+void Track::add_audio_input(const unsigned int device_index)
+{
+  // Audio::AudioEngine::instance().get_default_input_device();
+
+  // Get audio input device
+  auto devices = Audio::AudioEngine::instance().get_devices();
+  if (devices.empty())
+  {
+    throw std::runtime_error("No audio input devices available.");
+  }
+  if (device_index >= devices.size())
+  {
+    throw std::out_of_range("Audio device index is out of range.");
+  }
+
+  RtAudio::DeviceInfo input_device = devices[device_index];
+
+  // Verify the audio device has input channels
+  if (input_device.inputChannels < 1)
+  {
+    throw std::runtime_error("Selected audio device " + input_device.name + " has no input channels.");
+  }
+
+  m_audio_input_device_index = device_index;
+  std::cout << "Track: Added audio input device: " << input_device.name << std::endl;
+}
 
 /** @brief Updates the track with a new MIDI message.
  *  This function is called by the MidiEngine when a new MIDI message is received.
