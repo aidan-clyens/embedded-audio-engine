@@ -13,12 +13,6 @@ template <typename T>
 class ThreadedEngine
 {
 public:
-  static ThreadedEngine& instance()
-  {
-    static ThreadedEngine instance;
-    return instance;
-  }
-
   /** @brief Start the ThreadedEngine thread.
    */
   void start()

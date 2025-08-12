@@ -37,7 +37,7 @@ void midi_callback(double deltatime, std::vector<unsigned char> *message, void *
   auto it = midi_message_type_names.find(midi_message.type);
   midi_message.type_name = it != midi_message_type_names.end() ? it->second : "Unknown MIDI Message";
 
-  midi_engine->push_message(midi_message);
+  midi_engine->receive_midi_message(midi_message);
 }
 
 /** @brief Constructor for the MidiEngine class.
@@ -145,28 +145,4 @@ void MidiEngine::close_input_port()
   {
     std::cerr << "Error closing MIDI input port: " << error.getMessage() << std::endl;
   }
-}
-
-/** @brief The main loop of the MidiEngine thread.
- *  This function continuously checks for incoming MIDI messages and processes them.
- */
-void MidiEngine::run() {
-  while (m_running)
-  {
-    MidiMessage message = m_message_queue.pop();
-    // Process the MIDI message here, or call a user-defined handler
-    std::cout << "[Thread] Received MIDI message: " << message << std::endl;
-    process_message(message);
-  }
-}
-
-/** @brief Process a MIDI message.
- *  This function is called to handle a MIDI message after it has been dequeued.
- *  It can be overridden by subclasses to implement custom processing logic.
- *
- *  @param message The MIDI message to process.
- */
-void MidiEngine::process_message(const MidiMessage& message)
-{
-  notify(message);
 }

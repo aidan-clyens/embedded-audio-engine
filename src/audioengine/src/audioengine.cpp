@@ -58,6 +58,7 @@ void AudioEngine::run()
 {
   while (m_running)
   {
+    handle_messages();
     update_state();
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }

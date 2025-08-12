@@ -6,8 +6,7 @@
 #include <vector>
 #include <rtaudio/RtAudio.h>
 
-#include "subject.h"
-#include "threadedengine.h"
+#include "resourceengine.h"
 
 namespace Audio
 {
@@ -25,6 +24,11 @@ struct AudioMessage
 
 };
 
+inline std::ostream& operator<<(std::ostream& os, const AudioMessage& message)
+{
+  return os << "AudioMessage";
+}
+
 struct AudioEngineStatistics
 {
   unsigned int tracks_playing;
@@ -34,7 +38,7 @@ struct AudioEngineStatistics
 /** @class AudioEngine
  *  @brief 
  */
-class AudioEngine : public ThreadedEngine<AudioMessage>, public Subject<AudioMessage>
+class AudioEngine : public ResourceEngine<AudioMessage>
 {
 public:
   static AudioEngine& instance()
