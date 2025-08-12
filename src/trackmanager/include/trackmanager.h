@@ -12,7 +12,7 @@ namespace Tracks
 {
 
 /** @class TrackManager
- *  @brief The TrackManager class is responsible for managing tracks in the Digital Audio Workstation.
+ *  @brief The TrackManager class is responsible for managing tracks in the application.
  *  It inherits from ThreadedEngine to handle MIDI messages and manage track operations.
  */
 class TrackManager : public ThreadedEngine<Midi::MidiMessage>
