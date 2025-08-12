@@ -12,8 +12,6 @@ using namespace Tracks;
  */
 void Track::add_audio_input(const unsigned int device_index)
 {
-  // Audio::AudioEngine::instance().get_default_input_device();
-
   // Get audio input device
   auto devices = Audio::AudioEngine::instance().get_devices();
   if (devices.empty())
@@ -35,6 +33,34 @@ void Track::add_audio_input(const unsigned int device_index)
 
   m_audio_input_device_index = device_index;
   std::cout << "Track: Added audio input device: " << input_device.name << std::endl;
+}
+
+/** @brief Adds an audio output to the track.
+ *  @param device_index The index of the audio output device. Defaults to 0 (the default output device).
+ */
+void Track::add_audio_output(const unsigned int device_index)
+{
+  // Get audio output device
+  auto devices = Audio::AudioEngine::instance().get_devices();
+  if (devices.empty())
+  {
+    throw std::runtime_error("No audio output devices available.");
+  }
+  if (device_index >= devices.size())
+  {
+    throw std::out_of_range("Audio device index is out of range.");
+  }
+
+  RtAudio::DeviceInfo output_device = devices[device_index];
+
+  // Verify the audio device has output channels
+  if (output_device.outputChannels < 1)
+  {
+    throw std::runtime_error("Selected audio device " + output_device.name + " has no output channels.");
+  }
+
+  m_audio_output_device_index = device_index;
+  std::cout << "Track: Added audio output device: " << output_device.name << std::endl;
 }
 
 /** @brief Updates the track with a new MIDI message.

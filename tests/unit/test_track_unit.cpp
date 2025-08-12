@@ -38,5 +38,18 @@ TEST(TrackTest, AddMidiInput)
  */
 TEST(TrackTest, AddAudioOutput)
 {
-  EXPECT_TRUE(false) << "This test is not implemented yet.";
+  TrackManager::instance().clear_tracks();
+
+  // Create a new track
+  size_t index = TrackManager::instance().add_track();
+  auto track = TrackManager::instance().get_track(index);
+
+  // Add audio output to the track
+  track->add_audio_output();
+
+  // Verify the track has an audio output
+  EXPECT_TRUE(track->has_audio_output());
+ 
+  unsigned int expected_output_device_index = Audio::AudioEngine::instance().get_default_output_device();
+  EXPECT_EQ(track->get_audio_output(), expected_output_device_index);
 }
