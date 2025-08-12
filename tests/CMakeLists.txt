@@ -4,6 +4,7 @@ add_executable(EmbeddedAudioEngineUnitTests
   test_audioengine_unit.cpp
   test_filesystem_unit.cpp
   test_trackmanager_unit.cpp
+  test_track_unit.cpp
 )
 
 add_executable(EmbeddedAudioEngineTests
