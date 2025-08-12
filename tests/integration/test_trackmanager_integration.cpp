@@ -36,7 +36,7 @@ TEST(TrackManagerIntegrationTest, SingleTrack)
 
   // Add an audio input to the track
   track->add_audio_input();
-  unsigned int input_device_index = AudioEngine::instance().get_default_input_device();
+  unsigned int input_device_index = audio_engine.get_default_input_device();
   ASSERT_EQ(track->get_audio_input(), input_device_index);
 
   // Open a test WAV file and load it into the track
@@ -48,9 +48,14 @@ TEST(TrackManagerIntegrationTest, SingleTrack)
 
   std::cout << "WAV file loaded: " << wav_file.get_filepath() << std::endl;
 
-  audio_engine.attach(track);
+  track->add_wav_file_input(wav_file);
 
   std::this_thread::sleep_for(std::chrono::seconds(1));
+
+  // Read audio engine statistics after adding the track and WAV file
+  stats = audio_engine.get_statistics();
+  std::cout << "Tracks playing: " << stats.tracks_playing << std::endl;
+  std::cout << "Total frames processed: " << stats.total_frames_processed << std::endl;
 
   // Stop the audio engine and track manager
   audio_engine.stop();

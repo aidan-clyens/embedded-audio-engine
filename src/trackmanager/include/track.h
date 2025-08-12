@@ -11,8 +11,14 @@
 #include "audiosource.h"
 
 // Forward declaration
-namespace Audio {
+namespace Audio
+{
   struct AudioMessage;
+}
+
+namespace Files
+{
+  class WavFile;
 }
 
 namespace Tracks
@@ -31,6 +37,7 @@ public:
 
   void add_audio_input(const unsigned int device_index = 0);
   void add_midi_input() {}
+  void add_wav_file_input(const Files::WavFile &wav_file);
   void add_audio_output(const unsigned int device_index = 0);
 
   bool has_audio_input() const { return m_audio_input_device_index.has_value(); }

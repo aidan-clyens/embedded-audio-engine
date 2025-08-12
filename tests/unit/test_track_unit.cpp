@@ -4,18 +4,27 @@
 #include "trackmanager.h"
 #include "track.h"
 #include "audioengine.h"
+#include "filesystem.h"
 
 using namespace Tracks;
 
-/** @brief Track - Add Audio Input
- */
-TEST(TrackTest, AddAudioInput)
+TEST(TrackTest, Setup)
 {
   TrackManager::instance().clear_tracks();
 
   // Create a new track
   size_t index = TrackManager::instance().add_track();
   auto track = TrackManager::instance().get_track(index);
+
+  EXPECT_NE(track, nullptr) << "Track should not be null after creation";
+  EXPECT_EQ(TrackManager::instance().get_track_count(), 1) << "Track count should be 1 after adding a track";
+}
+
+/** @brief Track - Add Audio Input
+ */
+TEST(TrackTest, AddAudioInput)
+{
+  auto track = TrackManager::instance().get_track(0);
 
   // Add audio input to the track
   track->add_audio_input();
@@ -38,11 +47,7 @@ TEST(TrackTest, AddMidiInput)
  */
 TEST(TrackTest, AddAudioOutput)
 {
-  TrackManager::instance().clear_tracks();
-
-  // Create a new track
-  size_t index = TrackManager::instance().add_track();
-  auto track = TrackManager::instance().get_track(index);
+  auto track = TrackManager::instance().get_track(0);
 
   // Add audio output to the track
   track->add_audio_output();
@@ -52,4 +57,17 @@ TEST(TrackTest, AddAudioOutput)
  
   unsigned int expected_output_device_index = Audio::AudioEngine::instance().get_default_output_device();
   EXPECT_EQ(track->get_audio_output(), expected_output_device_index);
+}
+
+/** @brief Track - Add WAV File Input
+ */
+TEST(TrackTest, AddWavFileInput)
+{
+  auto track = TrackManager::instance().get_track(0);
+
+  // Open a test WAV file and load it into the track
+  std::string test_wav_file = "samples/test.wav";
+
+  Files::WavFile wav_file = Files::FileSystem::instance().read_wav_file(test_wav_file);
+  track->add_wav_file_input(wav_file);
 }

@@ -1,6 +1,7 @@
 #include "track.h"
 
 #include "audioengine.h"
+#include "wavfile.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -31,8 +32,24 @@ void Track::add_audio_input(const unsigned int device_index)
     throw std::runtime_error("Selected audio device " + input_device.name + " has no input channels.");
   }
 
+  // Attach the track to the audio device
+  Audio::AudioEngine::instance().attach(shared_from_this());
+
   m_audio_input_device_index = device_index;
   std::cout << "Track: Added audio input device: " << input_device.name << std::endl;
+}
+
+/** @brief Adds a WAV file input to the track.
+ *  @param wav_file The WAV file.
+ */
+void Track::add_wav_file_input(const Files::WavFile &wav_file)
+{
+  std::cout << "Track: Added WAV file input: " << wav_file.get_filename() << std::endl;
+  std::cout << "Sample Rate: " << wav_file.get_sample_rate() 
+            << ", Channels: " << wav_file.get_channels() 
+            << ", Format: " << wav_file.get_format() << std::endl;
+
+  throw std::runtime_error("WAV file input is not implemented yet.");
 }
 
 /** @brief Adds an audio output to the track.

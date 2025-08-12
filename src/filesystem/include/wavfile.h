@@ -29,6 +29,21 @@ public:
     return m_filepath.filename().string();
   }
 
+  unsigned int get_sample_rate() const
+  {
+    return (unsigned int)m_sfinfo.samplerate;
+  }
+
+  unsigned int get_channels() const
+  {
+    return (unsigned int)m_sfinfo.channels;
+  }
+
+  unsigned int get_format() const
+  {
+    return (unsigned int)m_sfinfo.format;
+  }
+
 private:
   WavFile(const std::filesystem::path &path);
 
