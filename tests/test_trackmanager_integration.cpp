@@ -1,15 +1,20 @@
 #include <gtest/gtest.h>
 #include <iostream>
+#include <thread>
+#include <chrono>
 
 #include "audioengine.h"
 #include "trackmanager.h"
+#include "filesystem.h"
 
 using namespace Audio;
 using namespace Tracks;
+using namespace Files;
 
 TEST(TrackManagerIntegrationTest, SingleTrack)
 {
   AudioEngine &audio_engine = AudioEngine::instance();
+  FileSystem &file_system = FileSystem::instance();
   TrackManager &track_manager = TrackManager::instance();
 
   // Start the audio engine and track manager
@@ -30,7 +35,17 @@ TEST(TrackManagerIntegrationTest, SingleTrack)
   std::cout << "Total frames processed: " << stats.total_frames_processed << std::endl;
 
   // Open a test WAV file and load it into the track
-  std::string test_wav_file = "test_audio.wav"; // Ensure this file exists
+  std::string test_wav_file = "samples/test.wav";
+
+  WavFile wav_file = file_system.read_wav_file(test_wav_file);
+  ASSERT_EQ(wav_file.get_filepath(), file_system.convert_to_absolute(test_wav_file));
+  ASSERT_EQ(wav_file.get_filename(), file_system.convert_to_absolute(test_wav_file).filename().string());
+
+  std::cout << "WAV file loaded: " << wav_file.get_filepath() << std::endl;
+
+  audio_engine.attach(track);
+
+  std::this_thread::sleep_for(std::chrono::seconds(1));
 
   // Stop the audio engine and track manager
   audio_engine.stop();
