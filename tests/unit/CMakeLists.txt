@@ -5,6 +5,7 @@ add_executable(EmbeddedAudioEngineUnitTests
   test_filesystem_unit.cpp
   test_trackmanager_unit.cpp
   test_track_unit.cpp
+  test_devicemanager_unit.cpp
 )
 
 target_link_libraries(EmbeddedAudioEngineUnitTests PRIVATE
@@ -13,6 +14,7 @@ target_link_libraries(EmbeddedAudioEngineUnitTests PRIVATE
   audioengine
   trackmanager
   filesystem
+  devicemanager
 )
 
 add_test(NAME EmbeddedAudioEngineUnitTests COMMAND EmbeddedAudioEngineUnitTests)
