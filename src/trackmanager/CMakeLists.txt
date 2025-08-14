@@ -25,4 +25,5 @@ target_link_libraries(trackmanager PUBLIC
   midiengine
   audioengine
   filesystem
+  devicemanager
 )

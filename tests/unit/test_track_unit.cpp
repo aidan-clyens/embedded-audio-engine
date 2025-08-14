@@ -31,9 +31,7 @@ TEST(TrackTest, AddAudioInput)
 
   // Verify the track has an audio input
   EXPECT_TRUE(track->has_audio_input());
-
-  unsigned int expected_input_device_index = Audio::AudioEngine::instance().get_default_input_device();
-  EXPECT_EQ(track->get_audio_input(), expected_input_device_index);
+  EXPECT_EQ(track->get_audio_input_id(), 0);
 }
 
 /** @brief Track - Add MIDI Input
@@ -54,9 +52,7 @@ TEST(TrackTest, AddAudioOutput)
 
   // Verify the track has an audio output
   EXPECT_TRUE(track->has_audio_output());
- 
-  unsigned int expected_output_device_index = Audio::AudioEngine::instance().get_default_output_device();
-  EXPECT_EQ(track->get_audio_output(), expected_output_device_index);
+  EXPECT_EQ(track->get_audio_output(), 0);
 }
 
 /** @brief Track - Add WAV File Input

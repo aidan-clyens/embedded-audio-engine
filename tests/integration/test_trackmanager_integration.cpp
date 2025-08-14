@@ -6,10 +6,12 @@
 #include "audioengine.h"
 #include "trackmanager.h"
 #include "filesystem.h"
+#include "devicemanager.h"
 
 using namespace Audio;
 using namespace Tracks;
 using namespace Files;
+using namespace Devices;
 
 TEST(TrackManagerIntegrationTest, SingleTrack)
 {
@@ -36,8 +38,7 @@ TEST(TrackManagerIntegrationTest, SingleTrack)
 
   // Add an audio input to the track
   track->add_audio_input();
-  unsigned int input_device_index = audio_engine.get_default_input_device();
-  ASSERT_EQ(track->get_audio_input(), input_device_index);
+  ASSERT_EQ(track->get_audio_input_id(), 0);
 
   // Open a test WAV file and load it into the track
   std::string test_wav_file = "samples/test.wav";

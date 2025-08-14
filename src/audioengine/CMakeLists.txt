@@ -7,8 +7,6 @@ target_sources(audioengine
       ${CMAKE_CURRENT_SOURCE_DIR}/include
     FILES
       include/audioengine.h
-      include/audiosource.h
-
 )
 
 target_sources(audioengine PRIVATE src/audioengine.cpp)

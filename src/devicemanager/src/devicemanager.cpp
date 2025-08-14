@@ -39,6 +39,5 @@ AudioDevice DeviceManager::get_audio_device(const unsigned int id) const
     }
   }
 
-
-  throw std::runtime_error("Audio device with ID " + std::to_string(id) + " does not exist");
+  throw std::out_of_range("Audio device with ID " + std::to_string(id) + " does not exist");
 }

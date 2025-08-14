@@ -27,13 +27,6 @@ AudioEngine::AudioEngine()
   }
 }
 
-/** @brief AudioEngine destructor
- */
-AudioEngine::~AudioEngine()
-{
-  
-}
-
 /** @brief Get a list of available audio devices
  *  @return A vector of available audio devices
  */

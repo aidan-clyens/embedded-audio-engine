@@ -8,6 +8,11 @@
 
 #include "resourceengine.h"
 
+namespace Devices
+{
+class DeviceManager;
+}
+
 namespace Audio
 {
 
@@ -19,16 +24,20 @@ enum eAudioEngineState
   AUDIO_ENGINE_STATE_RUNNING,
 };
 
-struct AudioMessage
-{
-
-};
+/** @struct AudioMessage
+ *  @brief Audio Message structure used to comminicate within AudioEngine class.
+ *  TO BE IMPLEMENTED
+ */
+struct AudioMessage {};
 
 inline std::ostream& operator<<(std::ostream& os, const AudioMessage& message)
 {
   return os << "AudioMessage";
 }
 
+/** @struct AudioEngineStatistics
+ *  @brief Running statistics for the Audio Engine.
+ */
 struct AudioEngineStatistics
 {
   unsigned int tracks_playing;
@@ -36,20 +45,18 @@ struct AudioEngineStatistics
 };
 
 /** @class AudioEngine
- *  @brief 
+ *  @brief Handles internal audio processing.
  */
 class AudioEngine : public ResourceEngine<AudioMessage>
 {
+  friend class Devices::DeviceManager;
+
 public:
   static AudioEngine& instance()
   {
     static AudioEngine instance;
     return instance;
   }
-
-  std::vector<RtAudio::DeviceInfo> get_devices();
-  unsigned int get_default_input_device() const { return p_audio_in->getDefaultInputDevice(); }
-  unsigned int get_default_output_device() const { return p_audio_in->getDefaultOutputDevice(); }
 
   AudioEngineStatistics get_statistics() const { return m_statistics; }
 
@@ -58,7 +65,8 @@ public:
 
 private:
   AudioEngine();
-  ~AudioEngine() override;
+
+  std::vector<RtAudio::DeviceInfo> get_devices();
 
   void process_audio(float *output_buffer, unsigned int n_frames);
 
