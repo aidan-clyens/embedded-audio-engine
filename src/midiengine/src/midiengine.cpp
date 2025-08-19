@@ -42,11 +42,12 @@ void midi_callback(double deltatime, std::vector<unsigned char> *message, void *
 
 /** @brief Constructor for the MidiEngine class.
  */
-MidiEngine::MidiEngine()
+MidiEngine::MidiEngine():
+  ResourceEngine("MidiEngine")
 {
   if (!is_alsa_seq_available())
   {
-    std::cout << "ALSA sequencer not available, skipping MIDI input initialization." << std::endl;
+    LOG_INFO("ALSA sequencer not available, skipping MIDI input initialization.");
     p_midi_in = nullptr;
     return;
   }
@@ -78,7 +79,7 @@ std::vector<MidiPort> MidiEngine::get_ports()
 
   // Get the number of available MIDI input ports
   unsigned int port_count = p_midi_in->getPortCount();
-  std::cout << "Number of MIDI input ports: " << port_count << std::endl;
+  LOG_INFO("Number of MIDI input ports: ", port_count);
 
   // List all available MIDI input ports
   for (unsigned int i = 0; i < port_count; ++i)
@@ -119,7 +120,7 @@ void MidiEngine::open_input_port(unsigned int port_number)
     throw std::runtime_error("Failed to open MIDI input port: " + error.getMessage());
   }
 
-  std::cout << "MIDI input port opened successfully." << std::endl;
+  LOG_INFO("MIDI input port opened successfully.");
   // Set the callback function to handle incoming MIDI messages
   p_midi_in->setCallback(&midi_callback, this);
   p_midi_in->ignoreTypes(false, true, true);
@@ -133,14 +134,14 @@ void MidiEngine::close_input_port()
 
   if (!p_midi_in->isPortOpen())
   {
-    std::cout << "No MIDI input port is currently open." << std::endl;
+    LOG_INFO("No MIDI input port is currently open.");
     return;
   }
 
   try
   {
     p_midi_in->closePort();
-    std::cout << "MIDI input port closed successfully." << std::endl;
+    LOG_INFO("MIDI input port closed successfully.");
   } catch (const RtMidiError &error)
   {
     std::cerr << "Error closing MIDI input port: " << error.getMessage() << std::endl;

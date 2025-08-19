@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "devicemanager.h"
+#include "logger.h"
 
 using namespace Devices;
 
@@ -12,7 +13,7 @@ TEST(DeviceManagerTest, GetAudioDevices)
 
   for (const auto &device : devices)
   {
-    std::cout << device.id << " - " << device.name << std::endl;
+    LOG_INFO(device.id, " - ", device.name);
   }
 }
 
@@ -22,7 +23,7 @@ TEST(DeviceManagerTest, GetAudioDevice)
 
   AudioDevice device = DeviceManager::instance().get_audio_device(0);
 
-  std::cout << device.id << " - " << device.name << std::endl;
+  LOG_INFO(device.id, " - ", device.name);
 
   EXPECT_EQ(device.id, devices[0].id);
   EXPECT_EQ(device.name, devices[0].name);

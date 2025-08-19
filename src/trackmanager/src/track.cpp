@@ -22,7 +22,7 @@ void Track::add_audio_input(const unsigned int device_id)
   }
 
   m_audio_input_device_id = device_id;
-  std::cout << "Track: Added audio input device: " << device.name << std::endl;
+  LOG_INFO("Track: Added audio input device: ", device.name);
 }
 
 /** @brief Adds a WAV file input to the track.
@@ -30,10 +30,10 @@ void Track::add_audio_input(const unsigned int device_id)
  */
 void Track::add_wav_file_input(const Files::WavFile &wav_file)
 {
-  std::cout << "Track: Added WAV file input: " << wav_file.get_filename() << std::endl;
-  std::cout << "Sample Rate: " << wav_file.get_sample_rate() 
-            << ", Channels: " << wav_file.get_channels() 
-            << ", Format: " << wav_file.get_format() << std::endl;
+  LOG_INFO("Track: Added WAV file input: ", wav_file.get_filename());
+  LOG_INFO("Sample Rate: ", wav_file.get_sample_rate(),
+           ", Channels: ", wav_file.get_channels(),
+           ", Format: ", wav_file.get_format());
 
   throw std::runtime_error("WAV file input is not implemented yet.");
 }
@@ -52,7 +52,7 @@ void Track::add_audio_output(const unsigned int device_id)
   }
 
   m_audio_output_device_id = device_id;
-  std::cout << "Track: Added audio output device: " << device.name << std::endl;
+  LOG_INFO("Track: Added audio output device: ", device.name);
 }
 
 /** @brief Updates the track with a new MIDI message.
@@ -94,21 +94,21 @@ void Track::handle_midi_message()
   switch (message.type)
   {
     case Midi::eMidiMessageType::NoteOn:
-      std::cout << "Track: Note On - Channel: " << static_cast<int>(message.channel)
-                << ", Note: " << static_cast<int>(message.data1)
-                << ", Velocity: " << static_cast<int>(message.data2) << std::endl;
+      LOG_INFO("Track: Note On - Channel: ", static_cast<int>(message.channel),
+               ", Note: ", static_cast<int>(message.data1),
+               ", Velocity: ", static_cast<int>(message.data2));
       break;
     case Midi::eMidiMessageType::NoteOff:
-      std::cout << "Track: Note Off - Channel: " << static_cast<int>(message.channel)
-                << ", Note: " << static_cast<int>(message.data1) << std::endl;
+      LOG_INFO("Track: Note Off - Channel: ", static_cast<int>(message.channel),
+               ", Note: ", static_cast<int>(message.data1));
       break;
     case Midi::eMidiMessageType::ControlChange:
-      std::cout << "Track: Control Change - Channel: " << static_cast<int>(message.channel)
-                << ", Controller: " << static_cast<int>(message.data1)
-                << ", Value: " << static_cast<int>(message.data2) << std::endl;
+      LOG_INFO("Track: Control Change - Channel: ", static_cast<int>(message.channel),
+               ", Controller: ", static_cast<int>(message.data1),
+               ", Value: ", static_cast<int>(message.data2));
       break;
     default:
-      std::cout << "Track: Unknown MIDI Message Type - " << message.type_name << std::endl;
+      LOG_INFO("Track: Unknown MIDI Message Type - ", message.type_name);
       break;
   }
 }

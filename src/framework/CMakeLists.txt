@@ -11,6 +11,7 @@ target_sources(framework
       include/observer.h
       include/subject.h
       include/threadedengine.h
+      include/logger.h
 )
 
 target_sources(framework PRIVATE src/alsa_utils.cpp)

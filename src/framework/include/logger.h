@@ -1,0 +1,89 @@
+#ifndef __LOGGER_H__
+#define __LOGGER_H__
+
+#include <iostream>
+#include <sstream>
+#include <string>
+#include <chrono>
+#include <mutex>
+#include <thread>
+#include <iomanip>
+
+#define LOG_INFO(...) \
+  Logger::instance().log(eLogLevel::Info, __VA_ARGS__)
+
+enum class eLogLevel
+{
+  Info,
+  Warning,
+  Error,
+  Debug
+};
+
+// Thread-local storage for thread name
+static thread_local std::string thread_name = "unnamed";
+
+static void set_thread_name(const std::string &name)
+{
+  thread_name = name;
+}
+
+class Logger
+{
+public:
+  static Logger &instance()
+  {
+    static Logger instance;
+    return instance;
+  }
+
+  template <typename... Args>
+  void log(eLogLevel level, Args &&...args)
+  {
+    std::lock_guard<std::mutex> lock(m_log_mutex);
+
+    auto now = std::chrono::system_clock::now();
+    auto time = std::chrono::system_clock::to_time_t(now);
+    std::tm local_time{};
+    localtime_r(&time, &local_time);
+
+    std::ostringstream timestamp_stream;
+    timestamp_stream << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S");
+
+    std::ostringstream message_stream;
+    (message_stream << ... << args); // Fold expression
+
+    m_out_stream << "[" << timestamp_stream.str() << "] "
+              << "[" << log_level_to_string(level) << "] "
+              << "[Thread: " << thread_name << "] "
+              << message_stream.str() << "\n";
+  }
+
+private:
+  std::ostream &m_out_stream = std::cout;
+  std::mutex m_log_mutex;
+
+  Logger() = default;
+  ~Logger() = default;
+  Logger(const Logger &) = delete;
+  Logger &operator=(const Logger &) = delete;
+
+  std::string log_level_to_string(eLogLevel level)
+  {
+    switch (level)
+    {
+    case eLogLevel::Info:
+      return "INFO";
+    case eLogLevel::Warning:
+      return "WARNING";
+    case eLogLevel::Error:
+      return "ERROR";
+    case eLogLevel::Debug:
+      return "DEBUG";
+    default:
+      return "UNKNOWN";
+    }
+  }
+};
+
+#endif // __LOGGER_H__

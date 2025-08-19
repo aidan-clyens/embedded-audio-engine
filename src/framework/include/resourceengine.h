@@ -4,6 +4,8 @@
 #include "subject.h"
 #include "threadedengine.h"
 
+#include <string>
+
 /** @class ResourceEngine 
  *  @brief This abstract class is used as a base for engines that manage resources
  *  such as audio or MIDI.
@@ -13,7 +15,7 @@ class ResourceEngine : public ThreadedEngine<T>, public Subject<T>
 {
 protected:
   // This is an abstract class, so we do not allow instantiation
-  ResourceEngine() = default;
+  ResourceEngine(const std::string &thread_name): ThreadedEngine<T>(thread_name) {}
   ~ResourceEngine() override = default;
 
   ResourceEngine(const ResourceEngine&) = delete;
@@ -32,7 +34,7 @@ protected:
   void handle_messages()
   {
     T message = this->m_message_queue.pop();
-    std::cout << "[Thread] Received message: " << message << std::endl;
+    LOG_INFO("Received message: ", message);
     this->process_message(message);
   }
 

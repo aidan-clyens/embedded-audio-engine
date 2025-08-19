@@ -10,11 +10,12 @@ using namespace Audio;
 
 /** @brief AudioEngine constructor
  */
-AudioEngine::AudioEngine()
+AudioEngine::AudioEngine():
+  ResourceEngine("AudioEngine")
 {
   if (!is_alsa_seq_available())
   {
-    std::cout << "ALSA sequencer not available, skipping audio input initialization." << std::endl;
+    LOG_INFO("ALSA sequencer not available, skipping audio input initialization.");
     p_audio_in = nullptr;
     return;
   }

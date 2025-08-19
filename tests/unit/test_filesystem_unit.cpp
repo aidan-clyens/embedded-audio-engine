@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "filesystem.h"
+#include "logger.h"
 
 using namespace Files;
 
@@ -61,10 +62,10 @@ TEST(FileSystemTest, ListDirectory)
 
   unsigned int contents_count = contents.size();
 
-  std::cout << "Contents of directory: " << path.string() << std::endl;
+  LOG_INFO("Contents of directory: ", path.string());
   for (const auto& entry : contents)
   {
-    std::cout << entry.string() << std::endl;
+    LOG_INFO(entry.string());
   }
 
   // Filter by directories
@@ -87,12 +88,12 @@ TEST(FileSystemTest, ListWavFilesInDirectory)
   std::vector<std::filesystem::path> wav_files = fs.list_wav_files_in_directory(path);
   ASSERT_FALSE(wav_files.empty()) << "WAV files should not be empty.";
 
-  std::cout << "WAV files in directory: " << path.string() << std::endl;
+  LOG_INFO("WAV files in directory: ", path.string());
   for (const auto& file : wav_files)
   {
     ASSERT_TRUE(fs.is_file(file)) << file.string() << " should be a file.";
     ASSERT_EQ(file.extension(), ".wav") << file.string() << " should have .wav extension.";
-    std::cout << file.string() << std::endl;
+    LOG_INFO(file.string());
   }
 }
 
@@ -109,7 +110,7 @@ TEST(FileSystemTest, LoadWavFile)
   std::vector<std::filesystem::path> samples = fs.list_wav_files_in_directory("./samples");
   for (const auto& sample : samples)
   {
-    std::cout << sample.string() << std::endl;
+    LOG_INFO(sample.string());
   }
 
   std::filesystem::path wav_file_path = "./samples/test.wav";

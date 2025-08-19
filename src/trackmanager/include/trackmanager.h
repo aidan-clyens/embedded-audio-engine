@@ -33,6 +33,8 @@ public:
   size_t get_track_count() const { return m_tracks.size(); }
 
 private:
+  TrackManager(): ThreadedEngine("TrackManager") {}
+
   std::vector<std::shared_ptr<Track>> m_tracks;
 };
 
