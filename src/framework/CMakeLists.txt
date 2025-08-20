@@ -14,7 +14,10 @@ target_sources(framework
       include/logger.h
 )
 
-target_sources(framework PRIVATE src/alsa_utils.cpp)
+target_sources(framework PRIVATE 
+  src/alsa_utils.cpp
+  src/logger.cpp
+)
 
 target_include_directories(framework
   PUBLIC

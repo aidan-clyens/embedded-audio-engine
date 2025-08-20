@@ -20,13 +20,8 @@ enum class eLogLevel
   Debug
 };
 
-// Thread-local storage for thread name
-static thread_local std::string thread_name = "unnamed";
-
-static void set_thread_name(const std::string &name)
-{
-  thread_name = name;
-}
+void set_thread_name(const std::string &name);
+const std::string &get_thread_name();
 
 class Logger
 {
@@ -51,12 +46,12 @@ public:
     timestamp_stream << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S");
 
     std::ostringstream message_stream;
-    (message_stream << ... << args); // Fold expression
+    (message_stream << ... << args); // C++17 fold expression
 
     m_out_stream << "[" << timestamp_stream.str() << "] "
-              << "[" << log_level_to_string(level) << "] "
-              << "[Thread: " << thread_name << "] "
-              << message_stream.str() << "\n";
+                 << "[" << log_level_to_string(level) << "] "
+                 << "[Thread: " << get_thread_name() << "] "
+                 << message_stream.str() << "\n";
   }
 
 private:
