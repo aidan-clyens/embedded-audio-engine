@@ -45,6 +45,9 @@ public:
   unsigned int get_audio_input_id() const { return m_audio_input_device_id.value_or(std::numeric_limits<unsigned int>::max()); }
   unsigned int get_audio_output() const { return m_audio_output_device_id.value_or(std::numeric_limits<unsigned int>::max()); }
 
+  void play();
+  void stop();
+
   // Observer interface
   void update(const Midi::MidiMessage& message) override;
   void update(const Audio::AudioMessage& message) override;

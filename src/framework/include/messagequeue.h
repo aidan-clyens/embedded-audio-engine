@@ -5,6 +5,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <atomic>
+#include <optional>
 
 /** @class MessageQueue
  *  @brief A thread-safe message queue for passing messages between threads.
@@ -39,6 +40,18 @@ public:
     T message = m_queue.front();
     m_queue.pop();
     return message;
+  }
+
+  std::optional<T> try_pop()
+  {
+    std::lock_guard<std::mutex> lock(m_mutex);
+    if (!m_queue.empty())
+    {
+      T message = m_queue.front();
+      m_queue.pop();
+      return message;
+    }
+    return std::nullopt;
   }
 
   /** @brief Check if the queue is empty.

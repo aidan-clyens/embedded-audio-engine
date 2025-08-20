@@ -2,6 +2,7 @@
 
 #include "devicemanager.h"
 #include "wavfile.h"
+#include "audioengine.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -53,6 +54,18 @@ void Track::add_audio_output(const unsigned int device_id)
 
   m_audio_output_device_id = device_id;
   LOG_INFO("Track: Added audio output device: ", device.name);
+}
+
+void Track::play()
+{
+  LOG_INFO("Track: Play...");
+  Audio::AudioEngine::instance().play();
+}
+
+void Track::stop()
+{
+  LOG_INFO("Track: Stop...");
+  Audio::AudioEngine::instance().stop();
 }
 
 /** @brief Updates the track with a new MIDI message.

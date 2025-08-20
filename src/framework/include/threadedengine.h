@@ -18,11 +18,11 @@ class ThreadedEngine
 public:
   bool is_running() const { return m_running; }
 
-  void start()
+  void start_thread()
   {
     if (m_running)
       return;
-    m_thread = std::thread(&ThreadedEngine::run, this);
+    m_thread = std::thread(&ThreadedEngine::_run, this);
 
     // Block until the thread signals it's ready
     while (!m_running.load(std::memory_order_acquire))
@@ -31,7 +31,7 @@ public:
     }
   }
 
-  void stop()
+  void stop_thread()
   {
     if (!m_running)
       return;
@@ -52,7 +52,7 @@ protected:
 
   MessageQueue<T> m_message_queue;
 
-  void run()
+  void _run()
   { 
     // Set the thread name
     {
@@ -63,15 +63,19 @@ protected:
     // Signal that the thread is ready
     m_running.store(true, std::memory_order_release);
 
-    LOG_INFO("Started");
+    LOG_INFO("Thread Started");
 
+    run();
+
+    LOG_INFO("Thread Stopped");
+  }
+
+  virtual void run()
+  {
     while (m_running)
     {
-      // Sleep or yield to avoid busy waiting
-      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+      std::this_thread::yield();
     }
-
-    LOG_INFO("Stopped");
   }
 
   std::string m_thread_name;

@@ -60,8 +60,17 @@ public:
 
   AudioEngineStatistics get_statistics() const { return m_statistics; }
 
-  void play() { m_state = AUDIO_ENGINE_STATE_RUNNING; }
-  void stop() { m_state = AUDIO_ENGINE_STATE_STOPPED; }
+  void play()
+  {
+    LOG_INFO("AudioEngine: Change state to Running");
+    m_state = AUDIO_ENGINE_STATE_RUNNING;
+  }
+  
+  void stop()
+  {
+    LOG_INFO("AudioEngine: Change state to Stopped");
+    m_state = AUDIO_ENGINE_STATE_STOPPED;
+  }
 
 private:
   AudioEngine();

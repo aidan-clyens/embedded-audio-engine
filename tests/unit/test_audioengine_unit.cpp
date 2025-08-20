@@ -10,7 +10,7 @@ TEST(AudioEngineTest, RunAudioEngine)
 {
   Audio::AudioEngine& engine = Audio::AudioEngine::instance();
 
-  engine.start();
+  engine.start_thread();
   // TODO - Add assertions to verify the engine is running properly.
   engine.stop();
   // TODO - Add assertions to verify the engine has stopped properly.

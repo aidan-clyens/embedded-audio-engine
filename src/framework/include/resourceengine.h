@@ -33,9 +33,13 @@ protected:
 
   void handle_messages()
   {
-    T message = this->m_message_queue.pop();
-    LOG_INFO("Received message: ", message);
-    this->process_message(message);
+    auto message = this->m_message_queue.try_pop();
+    
+    if (message)
+    {
+      LOG_INFO("Received message: ", message.value());
+      this->process_message(message.value());
+    }
   }
 
   virtual void run()
