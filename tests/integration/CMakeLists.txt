@@ -7,9 +7,12 @@ add_executable(EmbeddedAudioEngineTests
 target_link_libraries(EmbeddedAudioEngineTests PRIVATE
   gtest
   gtest_main
+  framework
   audioengine
+  midiengine
   trackmanager
   filesystem
+  devicemanager
 )
 
 add_test(NAME EmbeddedAudioEngineUnitTests COMMAND EmbeddedAudioEngineUnitTests)
