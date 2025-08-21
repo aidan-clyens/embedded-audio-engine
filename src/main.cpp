@@ -110,7 +110,6 @@ int main()
   
   // Attach track as observer to both engines
   midi_engine.attach(track);
-  audio_engine.attach(track);
 
   while (app_running)
   {

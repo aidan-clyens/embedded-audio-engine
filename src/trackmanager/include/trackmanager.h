@@ -35,6 +35,16 @@ public:
 private:
   TrackManager(): ThreadedEngine("TrackManager") {}
 
+  void run()
+  {
+    while (is_running())
+    {
+      std::this_thread::yield();
+    }
+  }
+
+  void handle_messages() override {}
+
   std::vector<std::shared_ptr<Track>> m_tracks;
 };
 

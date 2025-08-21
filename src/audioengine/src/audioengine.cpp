@@ -10,8 +10,7 @@ using namespace Audio;
 
 /** @brief AudioEngine constructor
  */
-AudioEngine::AudioEngine():
-  ResourceEngine("AudioEngine")
+AudioEngine::AudioEngine() : ThreadedEngine("AudioEngine")
 {
   if (!is_alsa_seq_available())
   {
@@ -45,16 +44,54 @@ std::vector<RtAudio::DeviceInfo> AudioEngine::get_devices()
   return devices;
 }
 
+/** @brief Play command
+ */
+void AudioEngine::play()
+{
+  AudioMessage msg;
+  msg.command = eAudioEngineCommand::Play;
+  push_message(msg);
+}
+
+/** @brief Stop command
+ */
+void AudioEngine::stop()
+{
+  AudioMessage msg;
+  msg.command = eAudioEngineCommand::Stop;
+  push_message(msg);
+}
 
 /** @brief Run the audio engine
  */
 void AudioEngine::run()
 {
-  while (m_running)
+  while (is_running())
   {
     handle_messages();
     update_state();
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  }
+}
+
+void AudioEngine::handle_messages()
+{
+  while (auto message = try_pop_message())
+  {
+    switch (message->command)
+    {
+      case eAudioEngineCommand::Play:
+        LOG_INFO("AudioEngine: Change state to Running");
+        m_state = eAudioEngineState::Running;
+        break;
+      case eAudioEngineCommand::Stop:
+        LOG_INFO("AudioEngine: Change state to Stopped");
+        m_state = eAudioEngineState::Stopped;
+        break;
+      default:
+        throw std::runtime_error("AudioEngine: Invalid command received");
+        break;
+    }
   }
 }
 
@@ -64,18 +101,23 @@ void AudioEngine::update_state()
 {
   switch (m_state)
   {
-    case AUDIO_ENGINE_STATE_INIT:
+    case Init:
       break;
-    case AUDIO_ENGINE_STATE_IDLE:
+    case Idle:
       break;
-    case AUDIO_ENGINE_STATE_STOPPED:
+    case Stopped:
       break;
-    case AUDIO_ENGINE_STATE_RUNNING:
+    case Running:
       update_state_running();
       break;
     default:
       throw std::runtime_error("Unknown Audio Engine state");
   }
+}
+
+void AudioEngine::update_state_running()
+{
+  
 }
 
 /** @brief Process audio for the current tracks in the Track Manager
@@ -86,11 +128,6 @@ void AudioEngine::process_audio(float *output_buffer, unsigned int n_frames)
 {
   // Clear output buffer as tracks will accumulate into it
   std::fill(output_buffer, output_buffer + n_frames, 0.0f);
-
-  // Create audio message to notify observers (tracks)
-  AudioMessage message;
-  // Notify all observers (tracks) to process their audio
-  notify(message);
 
   // Update statistics
   m_statistics.total_frames_processed += n_frames;

@@ -42,8 +42,7 @@ void midi_callback(double deltatime, std::vector<unsigned char> *message, void *
 
 /** @brief Constructor for the MidiEngine class.
  */
-MidiEngine::MidiEngine():
-  ResourceEngine("MidiEngine")
+MidiEngine::MidiEngine(): ThreadedEngine("MidiEngine")
 {
   if (!is_alsa_seq_available())
   {

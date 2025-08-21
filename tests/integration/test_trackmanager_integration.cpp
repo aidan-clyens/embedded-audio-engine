@@ -45,6 +45,9 @@ TEST(TrackManagerIntegrationTest, SingleTrack)
 
   track->add_wav_file_input(wav_file);
 
+  // Add audio output to track
+  track->add_audio_output();
+
   track->play();
   std::this_thread::sleep_for(std::chrono::seconds(2));
   track->stop();

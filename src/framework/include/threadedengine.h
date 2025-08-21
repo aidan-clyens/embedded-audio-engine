@@ -16,7 +16,7 @@ template <typename T>
 class ThreadedEngine
 {
 public:
-  bool is_running() const { return m_running; }
+  bool is_running() const noexcept { return m_running.load(); }
 
   void start_thread()
   {
@@ -43,14 +43,17 @@ public:
     }
   }
 
+  void push_message(const T& msg) { m_message_queue.push(msg); }
+  std::optional<T> try_pop_message() { return m_message_queue.try_pop(); }
+  bool pop_message(T& out) { return m_message_queue.pop(out); }
+  bool queue_empty() const { return m_message_queue.empty(); }
+
 protected:
   ThreadedEngine(const std::string &thread_name): m_thread_name(thread_name) {}
 
   virtual ~ThreadedEngine() = default;
   ThreadedEngine(const ThreadedEngine&) = delete;
   ThreadedEngine& operator=(const ThreadedEngine&) = delete;
-
-  MessageQueue<T> m_message_queue;
 
   void _run()
   { 
@@ -70,19 +73,14 @@ protected:
     LOG_INFO("Thread Stopped");
   }
 
-  virtual void run()
-  {
-    while (m_running)
-    {
-      std::this_thread::yield();
-    }
-  }
+  virtual void run() = 0;
+  virtual void handle_messages() = 0;
 
+private:
   std::string m_thread_name;
-
+  MessageQueue<T> m_message_queue;
   std::thread m_thread;
   std::atomic<bool> m_running{false};
-
   std::mutex m_mutex;
 };
 

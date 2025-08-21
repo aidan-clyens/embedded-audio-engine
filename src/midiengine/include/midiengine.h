@@ -5,7 +5,8 @@
 #include <vector>
 
 #include "miditypes.h"
-#include "resourceengine.h"
+#include "threadedengine.h"
+#include "subject.h"
 
 class RtMidiIn;  // Forward declaration for RtMidiIn class
 
@@ -15,7 +16,7 @@ namespace Midi
 /** @class MidiEngine
  *  @brief The MidiEngine class is responsible for managing MIDI input.
  */
-class MidiEngine : public ResourceEngine<MidiMessage>
+class MidiEngine : public ThreadedEngine<MidiMessage>, public Subject<MidiMessage>
 {
 public:
   static MidiEngine& instance()
@@ -37,6 +38,16 @@ public:
 private:
   MidiEngine();
   ~MidiEngine() override;
+
+  void run() override
+  {
+    while (is_running())
+    {
+      std::this_thread::yield();
+    }
+  }
+
+  void handle_messages() override {}
 
   std::unique_ptr<RtMidiIn> p_midi_in;
 };

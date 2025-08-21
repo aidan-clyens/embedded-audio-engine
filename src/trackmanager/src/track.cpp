@@ -6,6 +6,7 @@
 
 #include <iostream>
 #include <stdexcept>
+#include <memory>
 
 using namespace Tracks;
 
