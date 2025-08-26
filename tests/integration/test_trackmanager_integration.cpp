@@ -17,9 +17,8 @@ TEST(TrackManagerIntegrationTest, SingleTrack)
 {
   set_thread_name("Main");
 
-  // Start the audio engine and track manager
+  // Start the audio engine
   AudioEngine::instance().start_thread();
-  TrackManager::instance().start_thread();
 
   // Add a track
   ASSERT_EQ(TrackManager::instance().get_track_count(), 0);
@@ -57,7 +56,6 @@ TEST(TrackManagerIntegrationTest, SingleTrack)
   LOG_INFO("Tracks playing: ", stats.tracks_playing);
   LOG_INFO("Total frames processed: ", stats.total_frames_processed);
 
-  // Stop the audio engine and track manager
+  // Stop the audio engine
   AudioEngine::instance().stop_thread();
-  TrackManager::instance().stop_thread();
 }

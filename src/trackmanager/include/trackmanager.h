@@ -1,8 +1,6 @@
 #ifndef __TRACK_MANAGER_H_
 #define __TRACK_MANAGER_H_
 
-#include "threadedengine.h"
-#include "midiengine.h"
 #include "track.h"
 
 #include <memory>
@@ -15,7 +13,7 @@ namespace Tracks
  *  @brief The TrackManager class is responsible for managing tracks in the application.
  *  It inherits from ThreadedEngine to handle MIDI messages and manage track operations.
  */
-class TrackManager : public ThreadedEngine<Midi::MidiMessage>
+class TrackManager
 {
 public:
   static TrackManager& instance()
@@ -33,17 +31,8 @@ public:
   size_t get_track_count() const { return m_tracks.size(); }
 
 private:
-  TrackManager(): ThreadedEngine("TrackManager") {}
-
-  void run()
-  {
-    while (is_running())
-    {
-      std::this_thread::yield();
-    }
-  }
-
-  void handle_messages() override {}
+  TrackManager() = default;
+  virtual ~TrackManager() = default;
 
   std::vector<std::shared_ptr<Track>> m_tracks;
 };

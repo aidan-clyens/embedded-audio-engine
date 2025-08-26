@@ -103,8 +103,7 @@ int main()
   
   audio_engine.start_thread();
   midi_engine.start_thread();
-  track_manager.start_thread();
-  
+
   size_t track_index = track_manager.add_track();
   auto track = track_manager.get_track(track_index);
   
@@ -121,8 +120,7 @@ int main()
 
   midi_engine.detach(track);
   midi_engine.stop_thread();
-  
-  track_manager.stop_thread();
+
   track_manager.clear_tracks();
 
   audio_engine.stop();
