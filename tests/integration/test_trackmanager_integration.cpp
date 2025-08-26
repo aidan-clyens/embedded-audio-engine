@@ -49,9 +49,23 @@ TEST(TrackManagerIntegrationTest, SingleTrack)
 
   track->play();
   std::this_thread::sleep_for(std::chrono::seconds(2));
-  track->stop();
 
   // Read audio engine statistics after adding the track and WAV file
+  stats = AudioEngine::instance().get_statistics();
+  LOG_INFO("Tracks playing: ", stats.tracks_playing);
+  LOG_INFO("Total frames processed: ", stats.total_frames_processed);
+
+  std::this_thread::sleep_for(std::chrono::seconds(2));
+
+  track->stop();
+
+  // Wait until AudioEngine stops streaming
+  while (AudioEngine::instance().get_state() != eAudioEngineState::Idle)
+  {
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+  }
+
+  // Read audio engine statistics after stopping
   stats = AudioEngine::instance().get_statistics();
   LOG_INFO("Tracks playing: ", stats.tracks_playing);
   LOG_INFO("Total frames processed: ", stats.total_frames_processed);

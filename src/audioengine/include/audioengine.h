@@ -107,6 +107,11 @@ public:
     const unsigned int sample_rate,
     const unsigned int buffer_frames);
 
+  eAudioEngineState get_state() const noexcept
+  {
+    return m_state.load(std::memory_order_acquire);
+  }
+
 private:
   AudioEngine();
 
@@ -128,6 +133,7 @@ private:
   std::unique_ptr<RtAudio> p_rtaudio;
 
   std::atomic<eAudioEngineState> m_state;
+  std::atomic<unsigned int> m_tracks_playing;
   std::atomic<unsigned int> m_total_frames_processed;
   std::atomic<unsigned int> m_device_id;
   std::atomic<unsigned int> m_channels;

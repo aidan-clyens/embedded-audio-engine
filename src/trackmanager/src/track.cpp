@@ -42,7 +42,7 @@ void Track::add_wav_file_input(const Files::WavFile &wav_file)
 
   Audio::AudioEngine::instance().set_stream_parameters(wav_file.get_channels(), wav_file.get_sample_rate(), 512);
 
-  throw std::runtime_error("WAV file input is not implemented yet.");
+  // throw std::runtime_error("WAV file input is not implemented yet.");
 }
 
 /** @brief Adds an audio output to the track.

@@ -1,6 +1,7 @@
 #include "audioengine.h"
 #include "alsa_utils.h"
 
+#include <cmath>
 #include <cassert>
 #include <stdexcept>
 #include <thread>
@@ -27,11 +28,14 @@ AudioEngine::AudioEngine() : ThreadedEngine("AudioEngine"), m_state(eAudioEngine
   }
 }
 
+/** @brief Return a copy of the AudioEngine statistics
+ */
 AudioEngineStatistics AudioEngine::get_statistics() const
 {
   AudioEngineStatistics statistics;
 
-  statistics.total_frames_processed = m_total_frames_processed.load(std::memory_order_acquire);
+  statistics.tracks_playing = m_tracks_playing.load(std::memory_order_relaxed);
+  statistics.total_frames_processed = m_total_frames_processed.load(std::memory_order_relaxed);
 
   return statistics;
 }
@@ -285,6 +289,8 @@ void AudioEngine::update_state_stopped()
     LOG_ERROR("AudioEngine: Failed to stop and close stream: ", e.what());
   }
 
+  m_tracks_playing.store(0, std::memory_order_relaxed);
+
   LOG_INFO("AudioEngine: Stopped playing audio... Change state to Idle.");
   m_state.store(eAudioEngineState::Idle, std::memory_order_release);
 }
@@ -296,11 +302,31 @@ void AudioEngine::update_state_stopped()
 void AudioEngine::process_audio(float *output_buffer, unsigned int n_frames)
 {
   unsigned int channels = m_channels.load(std::memory_order_acquire);
-  // Clear output buffer as tracks will accumulate into it
   size_t count = static_cast<size_t>(n_frames) * channels;
-  std::fill(output_buffer, output_buffer + count, 0.0f);
+
+  // Parameters for test tone
+  static double phase = 0.0;
+  const double frequency = 440.0; // A4
+  const double sampleRate = static_cast<double>(m_sample_rate.load(std::memory_order_relaxed));
+  const double phaseIncrement = (2.0 * M_PI * frequency) / sampleRate;
+  const float amplitude = 0.2f; // Safe volume
+
+  for (unsigned int frame = 0; frame < n_frames; ++frame)
+  {
+    float sample = amplitude * std::sin(phase);
+    phase += phaseIncrement;
+    if (phase >= 2.0 * M_PI)
+      phase -= 2.0 * M_PI;
+
+    // Write the same sample to all channels (interleaved)
+    for (unsigned int ch = 0; ch < channels; ++ch)
+    {
+      output_buffer[frame * channels + ch] = sample;
+    }
+  }
 
   // Update statistics
+  m_tracks_playing.store(1, std::memory_order_relaxed);
   m_total_frames_processed.fetch_add(n_frames, std::memory_order_relaxed);
 }
 
