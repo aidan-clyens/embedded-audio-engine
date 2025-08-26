@@ -4,6 +4,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <variant>
 #include <rtaudio/RtAudio.h>
 
 #include "threadedengine.h"
@@ -16,27 +17,56 @@ class DeviceManager;
 namespace Audio
 {
 
-enum eAudioEngineState
+/** @enum eAudioEngineState
+ *  @brief AudioEngine states
+ */
+enum class eAudioEngineState
 {
   Idle,
-  Init,
   Stopped,
   Running,
+  Start,
 };
 
-enum eAudioEngineCommand
+/** @enum eAudioEngineCommand
+ *  @brief AudioEngine thread API commands
+ */
+enum class eAudioEngineCommand
 {
   Play,
   Stop,
+  SetDevice,
+  SetParams,
+};
+
+/** @struct SetDevicePayload
+ *  @brief Contains the parameters for the SetDevice API command
+ */
+struct SetDevicePayload
+{
+  unsigned int device_id;
+};
+
+/** @struct SetStreamParamsPayload
+ *  @brief Contains the parameters for the SetParams API command
+ */
+struct SetStreamParamsPayload
+{
+  unsigned int channels;
+  unsigned int sample_rate;
+  unsigned int buffer_frames;
 };
 
 /** @struct AudioMessage
  *  @brief Audio Message structure used to comminicate within AudioEngine class.
- *  TO BE IMPLEMENTED
  */
 struct AudioMessage
 {
   eAudioEngineCommand command;
+  std::variant<
+    std::monostate,
+    SetDevicePayload,
+    SetStreamParamsPayload> payload;
 };
 
 inline std::ostream& operator<<(std::ostream& os, const AudioMessage& message)
@@ -67,10 +97,15 @@ public:
     return instance;
   }
 
-  AudioEngineStatistics get_statistics() const { return m_statistics; }
+  AudioEngineStatistics get_statistics() const;
 
   void play();
   void stop();
+  void set_output_device(const unsigned int device_id);
+  void set_stream_parameters(
+    const unsigned int channels,
+    const unsigned int sample_rate,
+    const unsigned int buffer_frames);
 
 private:
   AudioEngine();
@@ -83,15 +118,21 @@ private:
   void handle_messages() override;
 
   void update_state();
+  void update_state_start();
   void update_state_running();
+  void update_state_stopped();
 
   static int audio_callback(void *output_buffer, void *input_buffer, unsigned int n_frames,
                      double stream_time, RtAudioStreamStatus status, void *user_data);
 
-  std::unique_ptr<RtAudio> p_audio_in;
+  std::unique_ptr<RtAudio> p_rtaudio;
 
-  eAudioEngineState m_state;
-  AudioEngineStatistics m_statistics;
+  std::atomic<eAudioEngineState> m_state;
+  std::atomic<unsigned int> m_total_frames_processed;
+  std::atomic<unsigned int> m_device_id;
+  std::atomic<unsigned int> m_channels;
+  std::atomic<unsigned int> m_sample_rate;
+  std::atomic<unsigned int> m_buffer_frames;
 };
 
 }  // namespace Audio

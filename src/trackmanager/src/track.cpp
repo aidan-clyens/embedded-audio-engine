@@ -24,6 +24,9 @@ void Track::add_audio_input(const unsigned int device_id)
   }
 
   m_audio_input_device_id = device_id;
+
+  Audio::AudioEngine::instance().set_output_device(device_id);
+
   LOG_INFO("Track: Added audio input device: ", device.name);
 }
 
@@ -36,6 +39,8 @@ void Track::add_wav_file_input(const Files::WavFile &wav_file)
   LOG_INFO("Sample Rate: ", wav_file.get_sample_rate(),
            ", Channels: ", wav_file.get_channels(),
            ", Format: ", wav_file.get_format());
+
+  Audio::AudioEngine::instance().set_stream_parameters(wav_file.get_channels(), wav_file.get_sample_rate(), 512);
 
   throw std::runtime_error("WAV file input is not implemented yet.");
 }

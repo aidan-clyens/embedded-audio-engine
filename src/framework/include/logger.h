@@ -12,6 +12,9 @@
 #define LOG_INFO(...) \
   Logger::instance().log(eLogLevel::Info, __VA_ARGS__)
 
+#define LOG_ERROR(...) \
+  Logger::instance().log(eLogLevel::Error, __VA_ARGS__)
+
 enum class eLogLevel
 {
   Info,
