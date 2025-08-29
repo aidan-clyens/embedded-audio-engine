@@ -42,11 +42,13 @@ public:
 
     auto now = std::chrono::system_clock::now();
     auto time = std::chrono::system_clock::to_time_t(now);
+    auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000;
     std::tm local_time{};
     localtime_r(&time, &local_time);
 
     std::ostringstream timestamp_stream;
-    timestamp_stream << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S");
+    timestamp_stream << std::put_time(&local_time, "%Y-%m-%d %H:%M:%S")
+            << '.' << std::setfill('0') << std::setw(3) << ms.count();
 
     std::ostringstream message_stream;
     (message_stream << ... << args); // C++17 fold expression
