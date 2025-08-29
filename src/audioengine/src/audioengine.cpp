@@ -11,7 +11,14 @@ using namespace Audio;
 
 /** @brief AudioEngine constructor
  */
-AudioEngine::AudioEngine() : ThreadedEngine("AudioEngine"), m_state(eAudioEngineState::Idle)
+AudioEngine::AudioEngine() : ThreadedEngine("AudioEngine"),
+  m_state(eAudioEngineState::Idle),
+  m_buffer_frames(512),
+  m_sample_rate(44100),
+  m_channels(2),
+  m_device_id(0),
+  m_tracks_playing(0),
+  m_total_frames_processed(0)
 {
   // if (!is_alsa_seq_available())
   // {

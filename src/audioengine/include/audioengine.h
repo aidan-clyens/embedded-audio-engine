@@ -107,9 +107,41 @@ public:
     const unsigned int sample_rate,
     const unsigned int buffer_frames);
 
-  eAudioEngineState get_state() const noexcept
+  inline eAudioEngineState get_state() const noexcept
   {
     return m_state.load(std::memory_order_acquire);
+  }
+
+  inline unsigned int get_output_device() const noexcept
+  {
+    return m_device_id.load(std::memory_order_relaxed);
+  }
+
+  inline unsigned int get_channels() const noexcept
+  {
+    return m_channels.load(std::memory_order_relaxed);
+  }
+
+  inline unsigned int get_sample_rate() const noexcept
+  {
+    return m_sample_rate.load(std::memory_order_relaxed);
+  }
+
+  inline unsigned int get_buffer_frames() const noexcept
+  {
+    return m_buffer_frames.load(std::memory_order_relaxed);
+  }
+
+  void stop_thread()
+  {
+    stop();
+    // Wait for audio to fully stop
+    while (get_state() != eAudioEngineState::Idle)
+    {
+      std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    }
+
+    ThreadedEngine::stop_thread();
   }
 
 private:
