@@ -14,6 +14,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Make Scripts Executable
+      run: chmod a+x docker/docker-setup.sh && chmod a+x docker/docker-build.sh
     - name: Enable Multi-Architecture Support in Docker
       run: ./docker/docker-setup.sh
     - name: Build the Docker image
