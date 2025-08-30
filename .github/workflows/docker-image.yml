@@ -8,15 +8,27 @@ on:
 
 jobs:
 
-  build:
-
+  docker-build-push:
     runs-on: ubuntu-latest
+
+    permissions:
+      packages: write
 
     steps:
     - uses: actions/checkout@v4
+
+    - name: Log in to GHCR
+      run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+
     - name: Make Scripts Executable
       run: chmod a+x docker/docker-setup.sh && chmod a+x docker/docker-build.sh
+
     - name: Enable Multi-Architecture Support in Docker
       run: ./docker/docker-setup.sh
-    - name: Build the Docker image
-      run: ./docker/docker-build.sh
+
+    - name: Build the Docker Image
+      run: |
+        IMAEG_NAME=ghcr.io/${{ github.repository_owner }}/arm64-audio:latest
+        docker build --platform=linux/arm64 -t $IMAGE_NAME .
+    - name: Push the Docker Image
+        docker push $IMAGE_NAME
