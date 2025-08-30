@@ -31,4 +31,4 @@ jobs:
         IMAEG_NAME=ghcr.io/${{ github.repository_owner }}/arm64-audio:latest
         docker build --platform=linux/arm64 -t $IMAGE_NAME .
     - name: Push the Docker Image
-        docker push $IMAGE_NAME
+      run: docker push $IMAGE_NAME
