@@ -14,5 +14,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Enable Multi-Architecture Support in Docker
+      run: ./docker/docker-setup.sh
     - name: Build the Docker image
       run: ./docker/docker-build.sh
