@@ -23,7 +23,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Make Scripts Executable
-      run: chmod a+x kitware.sh && chmod a+x configure.sh
+      run: chmod a+x kitware-archive.sh && chmod a+x configure.sh
 
     - name: Install Dependencies
       run: ./kitware-archive.sh && ./configure.sh
