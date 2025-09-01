@@ -72,10 +72,10 @@ jobs:
           image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           options: --platform linux/${{ matrix.arch }}
           run: |
-            cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
-            cmake --build build --parallel
-            ctest --test-dir build
-            tar czf build-${{ matrix.arch }}.tar.gz -C build .
+            cmake -B ${{ github.workspace }}/build -S ${{ github.workspace }} -DCMAKE_BUILD_TYPE=Release
+            cmake --build ${{ github.workspace }}/build --parallel
+            ctest --test-dir ${{ github.workspace }}/build
+            tar czf build-${{ matrix.arch }}.tar.gz -C ${{ github.workspace }}/build .
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
