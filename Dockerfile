@@ -1,5 +1,5 @@
 # Use the latest stable Ubuntu image
-FROM arm64v8/ubuntu
+FROM arm64v8/ubuntu:22.04
 
 # Set non-interactive mode for apt-get
 ENV DEBIAN_FRONTEND=noninteractive
@@ -25,5 +25,6 @@ RUN rm -rf /var/lib/apt/lists/*
 # Default command
 COPY docker/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
+
 
 CMD ["/bin/bash"]
