@@ -6,6 +6,7 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Give the default GITHUB_TOKEN the rights it needs
 permissions:
   contents: read
   packages: write
@@ -42,31 +43,33 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          labels: |
+            org.opencontainers.image.source=https://github.com/${{ github.repository }}
 
   build-binaries:
     needs: build-and-push-image
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: read
+      packages: read   # allow pulling private GHCR images
     strategy:
       matrix:
         arch: [amd64, arm64]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-  
+
       - name: Log in to GHCR
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-  
+
       - name: Run build in container
         uses: addnab/docker-run-action@v3
         with:
-          image: ghcr.io/aidan-clyens/embedded-audio-engine-dev:latest
+          image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           options: --platform linux/${{ matrix.arch }}
           run: |
             cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
@@ -89,7 +92,6 @@ jobs:
         with:
           path: ./artifacts
 
-      # Optional: attach to a GitHub Release
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
