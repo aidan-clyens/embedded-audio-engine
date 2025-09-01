@@ -1,5 +1,5 @@
 # Use the latest stable Ubuntu image
-FROM arm64v8/ubuntu:22.04
+FROM ubuntu:22.04
 
 # Set non-interactive mode for apt-get
 ENV DEBIAN_FRONTEND=noninteractive
@@ -28,3 +28,4 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 
 CMD ["/bin/bash"]
+
