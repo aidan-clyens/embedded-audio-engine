@@ -6,14 +6,14 @@ on:
   pull_request:
   workflow_dispatch:
 
-# Give the default GITHUB_TOKEN the rights it needs
 permissions:
   contents: read
-  packages: write
+  packages: write   # needed for pushing to GHCR
 
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}-dev
   IMAGE_TAG: latest
+  PROJECT_DIR: ${{ github.workspace }}
 
 jobs:
   build-and-push-image:
@@ -46,45 +46,55 @@ jobs:
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
 
-  build-binaries:
+  build-binaries-amd64:
     needs: build-and-push-image
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: read   # allow pulling private GHCR images
-    strategy:
-      matrix:
-        arch: [amd64, arm64]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Run build in container
+      - name: Run build in container (amd64)
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          options: --platform linux/${{ matrix.arch }}
+          options: --platform linux/amd64
           run: |
-            cmake -B ${{ github.workspace }}/build -S ${{ github.workspace }} -DCMAKE_BUILD_TYPE=Release
-            cmake --build ${{ github.workspace }}/build --parallel
-            ctest --test-dir ${{ github.workspace }}/build
-            tar czf build-${{ matrix.arch }}.tar.gz -C ${{ github.workspace }}/build .
+            cmake -B $PROJECT_DIR/build -S $PROJECT_DIR -DCMAKE_BUILD_TYPE=Release
+            cmake --build $PROJECT_DIR/build --parallel
+            ctest --test-dir $PROJECT_DIR/build
+            tar czf build-amd64.tar.gz -C $PROJECT_DIR/build .
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: binaries-${{ matrix.arch }}
-          path: build-${{ matrix.arch }}.tar.gz
+          name: binaries-amd64
+          path: build-amd64.tar.gz
+
+  build-binaries-arm64:
+    needs: build-and-push-image
+    runs-on: [self-hosted, linux, arm64]   # adjust labels to match your runner
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run build in container (arm64)
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          run: |
+            cmake -B $PROJECT_DIR/build -S $PROJECT_DIR -DCMAKE_BUILD_TYPE=Release
+            cmake --build $PROJECT_DIR/build --parallel
+            ctest --test-dir $PROJECT_DIR/build
+            tar czf build-arm64.tar.gz -C $PROJECT_DIR/build .
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: binaries-arm64
+          path: build-arm64.tar.gz
 
   upload-artifacts:
-    needs: build-binaries
+    needs: [build-binaries-amd64, build-binaries-arm64]
     runs-on: ubuntu-latest
     steps:
       - name: Download all artifacts
