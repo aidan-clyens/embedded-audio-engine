@@ -1,0 +1,41 @@
+name: Test Build CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write   # needed for pushing to GHCR
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}-dev
+  IMAGE_TAG: latest
+
+jobs:
+
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check working directory
+        with:
+          run: |
+            echo ./
+            echo ${{ github.workspace }}
+
+  build-test-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check working directory in Docker
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          options: --platform linux/amd64
+          run: |
+            echo ./
+            echo ${{ github.workspace }}
