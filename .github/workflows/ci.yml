@@ -59,7 +59,7 @@ jobs:
           options: --platform linux/amd64
           run: |
             mkdir build
-            cmake -B build -S ${{ env.PROJECT_DIR }} -DCMAKE_BUILD_TYPE=Release
+            cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
             cmake --build build --parallel
             ctest --test-dir build
             tar czf build-amd64.tar.gz -C build .
@@ -83,7 +83,7 @@ jobs:
           image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           run: |
             mkdir build
-            cmake -B build -S ${{ env.PROJECT_DIR }} -DCMAKE_BUILD_TYPE=Release
+            cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
             cmake --build build --parallel
             ctest --test-dir build
             tar czf build-arm64.tar.gz -C build .
