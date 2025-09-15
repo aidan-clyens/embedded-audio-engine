@@ -52,13 +52,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Create build directory (amd64)
+        run: mkdir build
+
       - name: Run build in container (amd64)
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          options: --platform linux/amd64
+          options: --platform linux/amd64 -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}
           run: |
-            mkdir build
             cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
             cmake --build build --parallel
             ctest --test-dir build
@@ -77,12 +79,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Create build directory (arm64)
+        run: mkdir build
+
       - name: Run build in container (arm64)
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          options: --platform linux/arm64 -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}
           run: |
-            mkdir build
             cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
             cmake --build build --parallel
             ctest --test-dir build
