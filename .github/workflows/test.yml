@@ -34,7 +34,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          options: --platform linux/amd64
+          options: --platform linux/amd64 -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}
           run: |
             pwd
             ls -l
