@@ -13,7 +13,6 @@ permissions:
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}-dev
   IMAGE_TAG: latest
-  PROJECT_DIR: ${{ github.workspace }}
 
 jobs:
   build-and-push-image:
@@ -59,11 +58,11 @@ jobs:
           image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           options: --platform linux/amd64
           run: |
-            mkdir ${{ env.PROJECT_DIR }}/build
-            cmake -B ${{ env.PROJECT_DIR }}/build -S ${{ env.PROJECT_DIR }} -DCMAKE_BUILD_TYPE=Release
-            cmake --build ${{ env.PROJECT_DIR }}/build --parallel
-            ctest --test-dir ${{ env.PROJECT_DIR }}/build
-            tar czf build-amd64.tar.gz -C ${{ env.PROJECT_DIR }}/build .
+            mkdir build
+            cmake -B build -S ${{ env.PROJECT_DIR }} -DCMAKE_BUILD_TYPE=Release
+            cmake --build build --parallel
+            ctest --test-dir build
+            tar czf build-amd64.tar.gz -C build .
 
       - name: Upload build artifact 
         uses: actions/upload-artifact@v4
@@ -83,11 +82,11 @@ jobs:
         with:
           image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
           run: |
-            mkdir ${{ env.PROJECT_DIR }}/build
-            cmake -B ${{ env.PROJECT_DIR }}/build -S ${{ env.PROJECT_DIR }} -DCMAKE_BUILD_TYPE=Release
-            cmake --build ${{ env.PROJECT_DIR }}/build --parallel
-            ctest --test-dir ${{ env.PROJECT_DIR }}/build
-            tar czf build-arm64.tar.gz -C ${{ env.PROJECT_DIR }}/build .
+            mkdir build
+            cmake -B build -S ${{ env.PROJECT_DIR }} -DCMAKE_BUILD_TYPE=Release
+            cmake --build build --parallel
+            ctest --test-dir build
+            tar czf build-arm64.tar.gz -C build .
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
