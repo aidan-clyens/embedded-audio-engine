@@ -6,17 +6,35 @@ on:
       - main
   workflow_dispatch: # allows manual trigger
 
+permissions:
+  contents: read
+  packages: write   # needed for pushing to GHCR
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}-dev
+  IMAGE_TAG: latest
+
 jobs:
   print-cwd:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the repository
       - name: Check out repository
         uses: actions/checkout@v4
 
-      # Step 2: Print the current working directory
+      - name: Create build directory
+        run: mkdir build
+
       - name: Show current working directory
         run: |
           pwd
           ls -l
+
+      - name: Show current working directory in Docker
+        uses: addnab/docker-run-action@v3
+        with:
+          image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          options: --platform linux/amd64
+          run: |
+            pwd
+            ls -l
