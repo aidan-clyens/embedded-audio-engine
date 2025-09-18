@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write   # needed for creating a release
   packages: write   # needed for pushing to GHCR
 
 env:
