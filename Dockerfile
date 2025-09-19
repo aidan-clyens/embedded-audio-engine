@@ -1,31 +1,60 @@
 # Use the latest stable Ubuntu image
-FROM ubuntu:22.04
+FROM ubuntu:24.04
+
+ARG ENABLE_RC=false
 
 # Set non-interactive mode for apt-get
-ENV DEBIAN_FRONTEND=noninteractive
+ENV DEBIAN_FRONTEND=noninteractive \
+    PATH="/opt/venv/bin:$PATH"
 
-COPY kitware-archive.sh kitware-archive.sh
-COPY configure.sh configure.sh
-RUN ./kitware-archive.sh || { echo "Failed to run kitware-archive.sh"; exit 1; }
-RUN ./configure.sh
+# Install prerequisites and Kitware keyring
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends ca-certificates gpg wget; \
+    # Fetch and install Kitware keyring
+    wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc \
+      | gpg --dearmor - > /usr/share/keyrings/kitware-archive-keyring.gpg; \
+    # Add Kitware repository
+    echo "deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ noble main" \
+      > /etc/apt/sources.list.d/kitware.list; \
+    echo "deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ noble-rc main" \
+      >> /etc/apt/sources.list.d/kitware.list; \
+    apt-get update; \
+    rm /usr/share/keyrings/kitware-archive-keyring.gpg; \
+    apt-get install -y --no-install-recommends kitware-archive-keyring
+
+RUN apt-get install -y --no-install-recommends \
+    build-essential \
+    cmake \
+    gdb \
+    git \
+    vim \
+    wget \
+    curl \
+    ca-certificates \
+    openssh-client \
+    alsa-utils \
+    librtmidi-dev \
+    librtaudio-dev \
+    portaudio19-dev \
+    libgtest-dev \
+    libsndfile1-dev \
+    python3 \
+    python3-dev \
+    python3-pip \
+    python3-venv && \
+    rm -rf /var/lib/apt/lists/*
 
 # Configure Python environment
 COPY requirements.txt /opt/requirements.txt
 
-RUN python3 -m venv /opt/venv
-RUN /opt/venv/bin/pip install --upgrade pip
-RUN /opt/venv/bin/pip install -r /opt/requirements.txt
+RUN python3 -m venv /opt/venv && \
+    pip install --upgrade pip && \
+    pip install -r /opt/requirements.txt
 
 # Configure ALSA to use the null device for audio simulation
-RUN echo 'pcm.!default {\n    type null\n}' > /root/.asoundrc
-
-# Clean up apt cache
-RUN rm -rf /var/lib/apt/lists/*
+RUN printf 'pcm.!default {\n    type null\n}\n' > /root/.asoundrc
 
 # Default command
 COPY docker/entrypoint.sh /entrypoint.sh
 ENTRYPOINT ["/entrypoint.sh"]
-
-
-CMD ["/bin/bash"]
-
