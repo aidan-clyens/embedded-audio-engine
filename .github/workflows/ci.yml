@@ -59,7 +59,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          options: --platform linux/amd64 -u $(id -u):$(id -g) -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}
+          options: --platform linux/amd64 -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}
           run: |
             cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
             cmake --build build --parallel
@@ -86,7 +86,7 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           image: ${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          options: --platform linux/arm64 -u $(id -u):$(id -g) -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}
+          options: --platform linux/arm64 -v ${{ github.workspace }}:${{ github.workspace }} -w ${{ github.workspace }}
           run: |
             cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
             cmake --build build --parallel
