@@ -1,7 +1,8 @@
 enable_testing()
 
 add_executable(EmbeddedAudioEngineTests
-  test_trackmanager_integration.cpp
+  test_audio_input_integration.cpp
+  test_midi_input_integration.cpp
 )
 
 target_link_libraries(EmbeddedAudioEngineTests PRIVATE

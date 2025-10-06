@@ -13,7 +13,7 @@ using namespace Tracks;
 using namespace Files;
 using namespace Devices;
 
-TEST(TrackManagerIntegrationTest, SingleTrack)
+TEST(AudioInputIntegrationTest, AudioInput)
 {
   set_thread_name("Main");
 
