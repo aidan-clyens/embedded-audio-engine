@@ -30,6 +30,12 @@ struct AudioDevice : public Device
   unsigned int preferred_sample_rate;
 };
 
+struct MidiDevice : public Device
+{
+  MidiDevice() = default;
+  ~MidiDevice() = default;
+};
+
 class DeviceManager
 {
 public:
@@ -41,6 +47,9 @@ public:
 
   std::vector<AudioDevice> get_audio_devices() const;
   AudioDevice get_audio_device(const unsigned int id) const;
+
+  std::vector<MidiDevice> get_midi_devices() const;
+  MidiDevice get_midi_device(const unsigned int id) const;
 
 private:
   DeviceManager() = default;

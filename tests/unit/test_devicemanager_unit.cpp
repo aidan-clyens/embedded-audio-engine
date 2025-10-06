@@ -42,3 +42,33 @@ TEST(DeviceManagerTest, GetAudioDeviceInvalid)
     AudioDevice device = DeviceManager::instance().get_audio_device(2);
   });
 }
+
+TEST(DeviceManagerTest, GetMidiDevices)
+{
+  std::vector<MidiDevice> devices = DeviceManager::instance().get_midi_devices();
+  EXPECT_GE(devices.size(), 0);
+
+  for (const auto &device : devices)
+  {
+    LOG_INFO(device.id, " - ", device.name);
+  }
+}
+
+TEST(DeviceManagerTest, GetMidiDevice)
+{
+  std::vector<MidiDevice> devices = DeviceManager::instance().get_midi_devices();
+
+  MidiDevice device = DeviceManager::instance().get_midi_device(0);
+
+  LOG_INFO(device.id, " - ", device.name);
+
+  EXPECT_EQ(device.id, devices[0].id);
+  EXPECT_EQ(device.name, devices[0].name);
+}
+
+TEST(DeviceManagerTest, GetMidiDeviceInvalid)
+{
+  EXPECT_ANY_THROW({
+    MidiDevice device = DeviceManager::instance().get_midi_device(2);
+  });
+}

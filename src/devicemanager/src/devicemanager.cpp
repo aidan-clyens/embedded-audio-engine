@@ -41,3 +41,33 @@ AudioDevice DeviceManager::get_audio_device(const unsigned int id) const
 
   throw std::out_of_range("Audio device with ID " + std::to_string(id) + " does not exist");
 }
+
+std::vector<MidiDevice> DeviceManager::get_midi_devices() const
+{
+  std::vector<MidiDevice> devices;
+  auto midi_devices = Midi::MidiEngine::instance().get_ports();
+
+  for (const auto &port : midi_devices)
+  {
+    MidiDevice device;
+    device.id = port.port_number;
+    device.name = port.port_name;
+    devices.push_back(device);
+  }
+
+  return devices;
+}
+
+MidiDevice DeviceManager::get_midi_device(const unsigned int id) const
+{
+  std::vector<MidiDevice> devices = get_midi_devices();
+  for (const auto &device : devices)
+  {
+    if (device.id == id)
+    {
+      return device;
+    }
+  }
+
+  throw std::out_of_range("MIDI device with ID " + std::to_string(id) + " does not exist");
+}

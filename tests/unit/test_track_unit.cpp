@@ -38,7 +38,14 @@ TEST(TrackTest, AddAudioInput)
  */
 TEST(TrackTest, AddMidiInput)
 {
-  EXPECT_TRUE(false) << "This test is not implemented yet.";
+  auto track = TrackManager::instance().get_track(0);
+
+  // Add MIDI input to the track
+  track->add_midi_input();
+
+  // Verify the track has a MIDI input
+  EXPECT_TRUE(track->has_midi_input());
+  EXPECT_EQ(track->get_midi_input_id(), 0);
 }
 
 /** @brief Track - Add Audio Output

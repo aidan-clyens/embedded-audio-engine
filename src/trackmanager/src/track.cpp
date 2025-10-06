@@ -30,6 +30,20 @@ void Track::add_audio_input(const unsigned int device_id)
   LOG_INFO("Track: Added audio input device: ", device.name);
 }
 
+/** @brief Adds a MIDI input device to the track.
+ *  @param device_id The ID of the MIDI input device. Defaults to 0 (the default input device)
+ */
+void Track::add_midi_input(const unsigned int device_id)
+{
+  Devices::MidiDevice device = Devices::DeviceManager::instance().get_midi_device(device_id);
+
+  Midi::MidiEngine::instance().open_input_port(device_id);
+
+  m_midi_input_device_id = device_id;
+
+  LOG_INFO("Track: Added MIDI input device: ", device.name);
+}
+
 /** @brief Adds a WAV file input to the track.
  *  @param wav_file The WAV file.
  */
