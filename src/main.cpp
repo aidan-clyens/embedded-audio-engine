@@ -9,7 +9,51 @@
 #include <chrono>
 #include <vector>
 
+using namespace Audio;
+using namespace Midi;
+using namespace Tracks;
+
 static bool app_running = false;
+
+/** @class Application
+ *  @brief The main Audio Engine Platform application
+ */
+class Application
+{
+public:
+  Application()
+  {
+    AudioEngine::instance().start_thread();
+    MidiEngine::instance().start_thread();
+  }
+
+  ~Application()
+  {
+    MidiEngine::instance().stop_thread();
+    AudioEngine::instance().stop_thread();
+  }
+
+  void run()
+  {
+    size_t track_index = TrackManager::instance().add_track();
+    auto track = TrackManager::instance().get_track(track_index);
+
+    // Attach track as observer to both engines
+    MidiEngine::instance().attach(track);
+
+    while (app_running)
+    {
+      track->handle_midi_message();
+
+      // Wait for the signal handler to set app_running to false
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+
+    MidiEngine::instance().detach(track);
+
+    TrackManager::instance().clear_tracks();
+  }
+};
 
 /** @brief Signal handler for graceful shutdown on SIGINT (Ctrl+C).
  *  This function sets the app_running flag to false, allowing the main loop to exit cleanly.
@@ -62,68 +106,14 @@ bool open_midi_device()
  */
 int main()
 {
-  Audio::AudioEngine& audio_engine = Audio::AudioEngine::instance();
-  Midi::MidiEngine& midi_engine = Midi::MidiEngine::instance();
-  Tracks::TrackManager& track_manager = Tracks::TrackManager::instance();
-  
   std::cout << "Embedded Audio Engine" << std::endl;
   std::cout << "---------------------" << std::endl;
 
-  std::cout << "Select audio or MIDI input device..." << std::endl;
-  std::cout << "1 - Audio Input" << std::endl;
-  std::cout << "2 - MIDI Input" << std::endl;
-  std::cout << "3 - Sample File" << std::endl;
-  std::cout << "Enter your choice (1-3): ";
-  int choice;
-  std::cin >> choice;
-
-  std::cout << std::endl;
-
-  if (choice == 1)
-  {
-    std::cout << "Using audio input device." << std::endl;
-  }
-  else if (choice == 2)
-  {
-    std::cout << "Using MIDI input device." << std::endl;
-    open_midi_device();
-  }
-  else if (choice == 3)
-  {
-    std::cout << "Using sample file input." << std::endl;
-  }
-  else
-  {
-    std::cerr << "Invalid choice. Exiting." << std::endl;
-    return 1;
-  }
-
   std::signal(SIGINT, signal_handler);
   app_running = true;
-  
-  audio_engine.start_thread();
-  midi_engine.start_thread();
 
-  size_t track_index = track_manager.add_track();
-  auto track = track_manager.get_track(track_index);
-  
-  // Attach track as observer to both engines
-  midi_engine.attach(track);
-
-  while (app_running)
-  {
-    track->handle_midi_message();
-
-    // Wait for the signal handler to set app_running to false
-    std::this_thread::sleep_for(std::chrono::milliseconds(10));
-  }
-
-  midi_engine.detach(track);
-  midi_engine.stop_thread();
-
-  track_manager.clear_tracks();
-
-  audio_engine.stop();
+  Application app;
+  app.run();
 
   return 0;
 }
