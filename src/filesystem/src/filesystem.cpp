@@ -1,5 +1,6 @@
 #include "filesystem.h"
 #include "wavfile.h"
+#include "midifile.h"
 
 using namespace Files;
 
@@ -66,6 +67,27 @@ std::vector<std::filesystem::path> FileSystem::list_wav_files_in_directory(const
   return wav_files;
 }
 
+/** @brief Lists MIDI files in a specified directory.
+ *  @param path The path to the directory to list.
+ *  @return A vector of filesystem paths representing the MIDI files in the specified directory.
+ *  @throws std::runtime_error if the path does not exist or is not a directory
+ */
+std::vector<std::filesystem::path> FileSystem::list_midi_files_in_directory(const std::filesystem::path &path)
+{
+  std::vector<std::filesystem::path> contents = list_directory(path, PathType::File);
+  std::vector<std::filesystem::path> midi_files;
+
+  for (const auto &entry : contents)
+  {
+    if (is_midi_file(entry))
+    {
+      midi_files.push_back(entry);
+    }
+  }
+
+  return midi_files;
+}
+
 void FileSystem::save_to_wav_file(std::vector<float> audio_buffer, const std::filesystem::path &path)
 {
 
@@ -86,4 +108,21 @@ WavFile FileSystem::read_wav_file(const std::filesystem::path &path)
   }
 
   return WavFile(absolute_path);
+}
+
+/** @brief Loads audio data from a WAV file.
+ *  @param path The path to the WAV file to load.
+ *  @return An AudioFile object containing the loaded audio data.
+ *  @throws std::runtime_error if the file cannot be opened or read.
+ */
+MidiFile FileSystem::read_midi_file(const std::filesystem::path &path)
+{
+  std::filesystem::path absolute_path = convert_to_absolute(path);
+
+  if (!path_exists(absolute_path) || !is_midi_file(absolute_path))
+  {
+    throw std::runtime_error("MIDI file does not exist or is not a file: " + absolute_path.string());
+  }
+
+  return MidiFile(absolute_path);
 }

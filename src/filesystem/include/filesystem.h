@@ -10,6 +10,7 @@ namespace Files
 
 // Forward declaration
 class WavFile;
+class MidiFile;
 
 /** @class File
  *  @brief Base class for various file types 
@@ -60,7 +61,8 @@ public:
   }
 
 	std::vector<std::filesystem::path> list_directory(const std::filesystem::path &path, PathType type = PathType::All);
-	std::vector<std::filesystem::path> list_wav_files_in_directory(const std::filesystem::path &path);
+  std::vector<std::filesystem::path> list_wav_files_in_directory(const std::filesystem::path &path);
+  std::vector<std::filesystem::path> list_midi_files_in_directory(const std::filesystem::path &path);
 
   /** @brief Checks if a specified path exists.
    *  @param path The path to check.
@@ -89,6 +91,15 @@ public:
     return (path_exists(path) && std::filesystem::is_regular_file(path) && path.extension() == ".wav");
   }
 
+  /** @brief Checks if a specified path is a MIDI file.
+   *  @param path The path to check.
+   *  @return True if the path is a MIDI file, false otherwise.
+   */
+  inline bool is_midi_file(const std::filesystem::path &path) const
+  {
+    return (path_exists(path) && std::filesystem::is_regular_file(path) && path.extension() == ".midi");
+  }
+
   /** @brief Checks if a specified path is a directory.
    *  @param path The path to check.
    *  @return True if the path is a directory, false otherwise.
@@ -109,6 +120,8 @@ public:
 
 	void save_to_wav_file(std::vector<float> audio_buffer, const std::filesystem::path &path);
   WavFile read_wav_file(const std::filesystem::path &path);
+
+  MidiFile read_midi_file(const std::filesystem::path &path);
 
 private:
   FileSystem() = default;

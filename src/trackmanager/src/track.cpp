@@ -2,6 +2,7 @@
 
 #include "devicemanager.h"
 #include "wavfile.h"
+#include "midifile.h"
 #include "audioengine.h"
 
 #include <iostream>
@@ -55,8 +56,14 @@ void Track::add_audio_file_input(const Files::WavFile &wav_file)
            ", Format: ", wav_file.get_format());
 
   Audio::AudioEngine::instance().set_stream_parameters(wav_file.get_channels(), wav_file.get_sample_rate(), 512);
+}
 
-  // throw std::runtime_error("WAV file input is not implemented yet.");
+/** @brief Adds a MIDI file input to the track.
+ *  @param midi_file The MIDI file.
+ */
+void Track::add_midi_file_input(const Files::MidiFile &midi_file)
+{
+  LOG_INFO("Track: Added MIDI file input: ", midi_file.get_filename());
 }
 
 /** @brief Adds an audio output to the track.

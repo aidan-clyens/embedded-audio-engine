@@ -3,6 +3,7 @@
 
 #include "filesystem.h"
 #include "wavfile.h"
+#include "midifile.h"
 #include "logger.h"
 
 using namespace Files;
@@ -39,6 +40,19 @@ TEST(FileSystemTest, IsWavFile)
 
   std::filesystem::path non_wav_file_path = "./README.md";
   ASSERT_FALSE(fs.is_wav_file(non_wav_file_path)) << "Path should not be recognized as a WAV file.";
+}
+
+TEST(FileSystemTest, IsMidiFile)
+{
+  FileSystem &fs = FileSystem::instance();
+
+  // std::filesystem::path midi_file_path = "./samples/test.midi";
+  // ASSERT_TRUE(fs.is_midi_file(midi_file_path)) << "Path should be recognized as a MIDI file.";
+
+  ASSERT_EQ(1, 0) << "This is a placeholder test for saving to a WAV file.";
+
+  std::filesystem::path non_midi_file_path = "./README.md";
+  ASSERT_FALSE(fs.is_midi_file(non_midi_file_path)) << "Path should not be recognized as a MIDI file.";
 }
 
 TEST(FileSystemTest, IsDirectory)
@@ -98,6 +112,24 @@ TEST(FileSystemTest, ListWavFilesInDirectory)
   }
 }
 
+TEST(FileSystemTest, ListMidiFilesInDirectory)
+{
+  FileSystem &fs = FileSystem::instance();
+
+  std::filesystem::path path = "./samples";
+
+  std::vector<std::filesystem::path> midi_files = fs.list_midi_files_in_directory(path);
+  ASSERT_FALSE(midi_files.empty()) << "MIDI files should not be empty.";
+
+  LOG_INFO("MIDI files in directory: ", path.string());
+  for (const auto &file : midi_files)
+  {
+    ASSERT_TRUE(fs.is_file(file)) << file.string() << " should be a file.";
+    ASSERT_EQ(file.extension(), ".midi") << file.string() << " should have .midi extension.";
+    LOG_INFO(file.string());
+  }
+}
+
 TEST(FileSystemTest, SaveToWavFile)
 {
   ASSERT_EQ(1, 0) << "This is a placeholder test for saving to a WAV file.";
@@ -124,4 +156,9 @@ TEST(FileSystemTest, LoadWavFile)
 
   ASSERT_TRUE(fs.path_exists(file.get_filepath())) << "Loaded file should exist.";
   ASSERT_TRUE(fs.is_wav_file(file.get_filepath())) << "Loaded file should be a WAV file.";
+}
+
+TEST(FileSystemTest, LoadMidiFile)
+{
+  ASSERT_EQ(1, 0) << "This is a placeholder test for saving to a WAV file.";
 }
