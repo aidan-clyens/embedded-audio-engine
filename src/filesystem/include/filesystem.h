@@ -97,7 +97,7 @@ public:
    */
   inline bool is_midi_file(const std::filesystem::path &path) const
   {
-    return (path_exists(path) && std::filesystem::is_regular_file(path) && path.extension() == ".midi");
+    return (path_exists(path) && std::filesystem::is_regular_file(path) && path.extension() == ".mid");
   }
 
   /** @brief Checks if a specified path is a directory.

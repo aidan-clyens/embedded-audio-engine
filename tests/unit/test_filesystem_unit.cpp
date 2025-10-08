@@ -46,10 +46,8 @@ TEST(FileSystemTest, IsMidiFile)
 {
   FileSystem &fs = FileSystem::instance();
 
-  // std::filesystem::path midi_file_path = "./samples/test.midi";
-  // ASSERT_TRUE(fs.is_midi_file(midi_file_path)) << "Path should be recognized as a MIDI file.";
-
-  ASSERT_EQ(1, 0) << "This is a placeholder test for saving to a WAV file.";
+  std::filesystem::path midi_file_path = "./samples/midi_c_major_monophonic.mid";
+  ASSERT_TRUE(fs.is_midi_file(midi_file_path)) << "Path should be recognized as a MIDI file.";
 
   std::filesystem::path non_midi_file_path = "./README.md";
   ASSERT_FALSE(fs.is_midi_file(non_midi_file_path)) << "Path should not be recognized as a MIDI file.";
@@ -125,7 +123,7 @@ TEST(FileSystemTest, ListMidiFilesInDirectory)
   for (const auto &file : midi_files)
   {
     ASSERT_TRUE(fs.is_file(file)) << file.string() << " should be a file.";
-    ASSERT_EQ(file.extension(), ".midi") << file.string() << " should have .midi extension.";
+    ASSERT_EQ(file.extension(), ".mid") << file.string() << " should have .mid extension.";
     LOG_INFO(file.string());
   }
 }
@@ -160,5 +158,5 @@ TEST(FileSystemTest, LoadWavFile)
 
 TEST(FileSystemTest, LoadMidiFile)
 {
-  ASSERT_EQ(1, 0) << "This is a placeholder test for saving to a WAV file.";
+  ASSERT_EQ(1, 0) << "This is a placeholder test for loading a MIDI file.";
 }
