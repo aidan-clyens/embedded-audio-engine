@@ -11,6 +11,32 @@ namespace Files
 // Forward declaration
 class WavFile;
 
+/** @class File
+ *  @brief Base class for various file types 
+ */
+class File
+{
+  friend class FileSystem;
+
+public:
+  virtual ~File() = default;
+
+  std::filesystem::path get_filepath() const
+  {
+    return m_filepath;
+  }
+
+  std::string get_filename() const
+  {
+    return m_filepath.filename().string();
+  }
+
+protected:
+  File(const std::filesystem::path &path): m_filepath(path) {}
+
+  std::filesystem::path m_filepath;
+};
+
 /** @enum PathType
  *  @brief Enum to specify the type of path to filter when listing directory contents.
  */

@@ -6,10 +6,9 @@ using namespace Files;
  *  @param path The path to the WAV file to open.
  *  @throws std::runtime_error if the file cannot be opened.
  */
-WavFile::WavFile(const std::filesystem::path &path)
+WavFile::WavFile(const std::filesystem::path &path):
+  File(path)
 {
-  m_filepath = path;
-
   m_sndfile = std::shared_ptr<SNDFILE>(
       sf_open(path.string().c_str(), SFM_READ, &m_sfinfo),
       [](SNDFILE *f)

@@ -6,28 +6,20 @@
 #include <string>
 #include <sndfile.h>
 
+#include "filesystem.h"
+
 namespace Files
 {
 
 /** @class AudioFile
  *  @brief Class for handling audio file operations.
  */
-class WavFile
+class WavFile : public File
 {
 friend class FileSystem;
 
 public:
   virtual ~WavFile() = default;
-
-  std::filesystem::path get_filepath() const
-  {
-    return m_filepath;
-  }
-
-  std::string get_filename() const
-  {
-    return m_filepath.filename().string();
-  }
 
   unsigned int get_sample_rate() const
   {
@@ -46,8 +38,6 @@ public:
 
 private:
   WavFile(const std::filesystem::path &path);
-
-  std::filesystem::path m_filepath;
 
   SF_INFO m_sfinfo;
   std::shared_ptr<SNDFILE> m_sndfile;
