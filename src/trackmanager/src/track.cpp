@@ -47,7 +47,7 @@ void Track::add_midi_input(const unsigned int device_id)
 /** @brief Adds a WAV file input to the track.
  *  @param wav_file The WAV file.
  */
-void Track::add_wav_file_input(const Files::WavFile &wav_file)
+void Track::add_audio_file_input(const Files::WavFile &wav_file)
 {
   LOG_INFO("Track: Added WAV file input: ", wav_file.get_filename());
   LOG_INFO("Sample Rate: ", wav_file.get_sample_rate(),

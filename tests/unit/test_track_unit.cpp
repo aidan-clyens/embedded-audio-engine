@@ -5,6 +5,7 @@
 #include "track.h"
 #include "audioengine.h"
 #include "filesystem.h"
+#include "wavfile.h"
 
 using namespace Tracks;
 
@@ -72,5 +73,5 @@ TEST(TrackTest, AddWavFileInput)
   std::string test_wav_file = "samples/test.wav";
 
   Files::WavFile wav_file = Files::FileSystem::instance().read_wav_file(test_wav_file);
-  track->add_wav_file_input(wav_file);
+  track->add_audio_file_input(wav_file);
 }

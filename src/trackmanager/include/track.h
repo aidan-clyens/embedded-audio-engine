@@ -34,8 +34,8 @@ public:
   Track() = default;
 
   void add_audio_input(const unsigned int device_id = 0);
+  void add_audio_file_input(const Files::WavFile &wav_file);
   void add_midi_input(const unsigned int device_id = 0);
-  void add_wav_file_input(const Files::WavFile &wav_file);
   void add_audio_output(const unsigned int device_id = 0);
 
   bool has_audio_input() const { return m_audio_input_device_id.has_value(); }

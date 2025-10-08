@@ -1,4 +1,5 @@
 #include "filesystem.h"
+#include "wavfile.h"
 
 using namespace Files;
 

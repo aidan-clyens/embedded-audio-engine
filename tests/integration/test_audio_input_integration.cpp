@@ -5,6 +5,7 @@
 #include "audioengine.h"
 #include "trackmanager.h"
 #include "filesystem.h"
+#include "wavfile.h"
 #include "devicemanager.h"
 #include "logger.h"
 
@@ -42,7 +43,7 @@ TEST(AudioInputIntegrationTest, AudioInput)
 
   LOG_INFO("WAV file loaded: ", wav_file.get_filepath());
 
-  track->add_wav_file_input(wav_file);
+  track->add_audio_file_input(wav_file);
 
   // Add audio output to track
   track->add_audio_output();

@@ -5,10 +5,11 @@
 #include <vector>
 #include <string>
 
-#include "wavfile.h"
-
 namespace Files
 {
+
+// Forward declaration
+class WavFile;
 
 /** @enum PathType
  *  @brief Enum to specify the type of path to filter when listing directory contents.

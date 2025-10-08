@@ -27,7 +27,7 @@ TEST(MidiInputIntegrationTest, MidiInput)
   size_t track_id = TrackManager::instance().add_track();
   auto track = TrackManager::instance().get_track(track_id);
 
-  // TODO - Add MIDI input to track
+  // Add MIDI input to track
   track->add_midi_input();
 
   // Stop the MIDI engine

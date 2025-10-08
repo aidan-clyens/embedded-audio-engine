@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "filesystem.h"
+#include "wavfile.h"
 #include "logger.h"
 
 using namespace Files;
