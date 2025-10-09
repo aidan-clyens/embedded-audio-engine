@@ -10,7 +10,7 @@ target_sources(framework
       include/messagequeue.h
       include/observer.h
       include/subject.h
-      include/threadedengine.h
+      include/engine.h
       include/logger.h
 )
 

@@ -7,7 +7,7 @@
 #include <variant>
 #include <rtaudio/RtAudio.h>
 
-#include "threadedengine.h"
+#include "engine.h"
 
 namespace Devices
 {
@@ -86,7 +86,7 @@ struct AudioEngineStatistics
 /** @class AudioEngine
  *  @brief Handles internal audio processing.
  */
-class AudioEngine : public ThreadedEngine<AudioMessage>
+class AudioEngine : public IEngine<AudioMessage>
 {
   friend class Devices::DeviceManager;
 
@@ -141,7 +141,7 @@ public:
       std::this_thread::sleep_for(std::chrono::milliseconds(1));
     }
 
-    ThreadedEngine::stop_thread();
+    IEngine::stop_thread();
   }
 
 private:

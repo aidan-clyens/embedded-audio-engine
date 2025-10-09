@@ -5,7 +5,7 @@
 #include <vector>
 
 #include "miditypes.h"
-#include "threadedengine.h"
+#include "engine.h"
 #include "subject.h"
 
 class RtMidiIn;  // Forward declaration for RtMidiIn class
@@ -16,7 +16,7 @@ namespace Midi
 /** @class MidiEngine
  *  @brief The MidiEngine class is responsible for managing MIDI input.
  */
-class MidiEngine : public ThreadedEngine<MidiMessage>, public Subject<MidiMessage>
+class MidiEngine : public IEngine<MidiMessage>, public Subject<MidiMessage>
 {
 public:
   static MidiEngine& instance()

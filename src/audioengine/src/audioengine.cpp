@@ -11,7 +11,7 @@ using namespace Audio;
 
 /** @brief AudioEngine constructor
  */
-AudioEngine::AudioEngine() : ThreadedEngine("AudioEngine"),
+AudioEngine::AudioEngine() : IEngine("AudioEngine"),
   m_state(eAudioEngineState::Idle),
   m_buffer_frames(512),
   m_sample_rate(44100),
