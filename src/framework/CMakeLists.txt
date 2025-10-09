@@ -12,6 +12,7 @@ target_sources(framework
       include/subject.h
       include/engine.h
       include/logger.h
+      include/input.h
 )
 
 target_sources(framework PRIVATE 

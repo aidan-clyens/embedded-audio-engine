@@ -1,6 +1,8 @@
 #ifndef __FILE_SYSTEM_H__
 #define __FILE_SYSTEM_H__
 
+#include "input.h"
+
 #include <filesystem>
 #include <vector>
 #include <string>
@@ -15,7 +17,7 @@ class MidiFile;
 /** @class File
  *  @brief Base class for various file types 
  */
-class File
+class File : public IInput
 {
   friend class FileSystem;
 

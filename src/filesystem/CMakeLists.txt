@@ -23,6 +23,7 @@ target_include_directories(filesystem
 target_link_libraries(filesystem
   PUBLIC
     sndfile
+    framework
 )
 
 set_target_properties(filesystem PROPERTIES LINKER_LANGUAGE CXX)
