@@ -36,7 +36,9 @@ public:
   }
 
 protected:
-  File(const std::filesystem::path &path): m_filepath(path) {}
+  File(const std::filesystem::path &path, const eInputType type):
+    IInput(type),
+    m_filepath(path) {}
 
   std::filesystem::path m_filepath;
 };

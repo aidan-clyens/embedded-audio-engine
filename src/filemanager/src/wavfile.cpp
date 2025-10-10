@@ -7,7 +7,7 @@ using namespace Files;
  *  @throws std::runtime_error if the file cannot be opened.
  */
 WavFile::WavFile(const std::filesystem::path &path):
-  File(path)
+  File(path, eInputType::AudioFile)
 {
   m_sndfile = std::shared_ptr<SNDFILE>(
       sf_open(path.string().c_str(), SFM_READ, &m_sfinfo),

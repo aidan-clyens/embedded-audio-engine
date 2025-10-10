@@ -17,7 +17,7 @@ public:
   virtual ~MidiFile() = default;
 
 private:
-  MidiFile(const std::filesystem::path &path): File(path) {}
+  MidiFile(const std::filesystem::path &path): File(path, eInputType::MidiFile) {}
 };
 
 } // namespace Files
