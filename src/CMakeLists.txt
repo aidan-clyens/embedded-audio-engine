@@ -2,7 +2,7 @@ add_subdirectory(framework)
 add_subdirectory(audioengine)
 add_subdirectory(midiengine)
 add_subdirectory(trackmanager)
-add_subdirectory(filesystem)
+add_subdirectory(filemanager)
 add_subdirectory(devicemanager)
 
 add_executable(EmbeddedAudioEngine
@@ -13,6 +13,6 @@ target_link_libraries(EmbeddedAudioEngine PRIVATE
   audioengine
   midiengine
   trackmanager
-  filesystem
+  filemanager
   devicemanager
 )

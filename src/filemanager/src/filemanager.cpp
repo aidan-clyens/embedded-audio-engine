@@ -1,4 +1,4 @@
-#include "filesystem.h"
+#include "filemanager.h"
 #include "wavfile.h"
 #include "midifile.h"
 
@@ -7,10 +7,10 @@ using namespace Files;
 /** @brief Lists the contents of a directory.
  *  @param path The path to the directory to list.
  *  @param type The type of contents to list (directories, files, or all).
- *  @return A vector of filesystem paths representing the contents of the directory.
+ *  @return A vector of filemanager paths representing the contents of the directory.
  *  @throws std::runtime_error if the path does not exist or is not a directory.
  */ 
-std::vector<std::filesystem::path> FileSystem::list_directory(const std::filesystem::path &path, PathType type)
+std::vector<std::filesystem::path> FileManager::list_directory(const std::filesystem::path &path, PathType type)
 {
   std::vector<std::filesystem::path> contents;
 
@@ -48,10 +48,10 @@ std::vector<std::filesystem::path> FileSystem::list_directory(const std::filesys
 
 /** @brief Lists WAV files in a specified directory.
  *  @param path The path to the directory to list.
- *  @return A vector of filesystem paths representing the WAV files in the specified directory.
+ *  @return A vector of filemanager paths representing the WAV files in the specified directory.
  *  @throws std::runtime_error if the path does not exist or is not a directory
  */
-std::vector<std::filesystem::path> FileSystem::list_wav_files_in_directory(const std::filesystem::path &path)
+std::vector<std::filesystem::path> FileManager::list_wav_files_in_directory(const std::filesystem::path &path)
 {
   std::vector<std::filesystem::path> contents = list_directory(path, PathType::File);
   std::vector<std::filesystem::path> wav_files;
@@ -69,10 +69,10 @@ std::vector<std::filesystem::path> FileSystem::list_wav_files_in_directory(const
 
 /** @brief Lists MIDI files in a specified directory.
  *  @param path The path to the directory to list.
- *  @return A vector of filesystem paths representing the MIDI files in the specified directory.
+ *  @return A vector of filemanager paths representing the MIDI files in the specified directory.
  *  @throws std::runtime_error if the path does not exist or is not a directory
  */
-std::vector<std::filesystem::path> FileSystem::list_midi_files_in_directory(const std::filesystem::path &path)
+std::vector<std::filesystem::path> FileManager::list_midi_files_in_directory(const std::filesystem::path &path)
 {
   std::vector<std::filesystem::path> contents = list_directory(path, PathType::File);
   std::vector<std::filesystem::path> midi_files;
@@ -88,7 +88,7 @@ std::vector<std::filesystem::path> FileSystem::list_midi_files_in_directory(cons
   return midi_files;
 }
 
-void FileSystem::save_to_wav_file(std::vector<float> audio_buffer, const std::filesystem::path &path)
+void FileManager::save_to_wav_file(std::vector<float> audio_buffer, const std::filesystem::path &path)
 {
 
 }
@@ -98,7 +98,7 @@ void FileSystem::save_to_wav_file(std::vector<float> audio_buffer, const std::fi
  *  @return An AudioFile object containing the loaded audio data.
  *  @throws std::runtime_error if the file cannot be opened or read.
  */
-WavFile FileSystem::read_wav_file(const std::filesystem::path &path)
+WavFile FileManager::read_wav_file(const std::filesystem::path &path)
 {
   std::filesystem::path absolute_path = convert_to_absolute(path);
 
@@ -115,7 +115,7 @@ WavFile FileSystem::read_wav_file(const std::filesystem::path &path)
  *  @return An AudioFile object containing the loaded audio data.
  *  @throws std::runtime_error if the file cannot be opened or read.
  */
-MidiFile FileSystem::read_midi_file(const std::filesystem::path &path)
+MidiFile FileManager::read_midi_file(const std::filesystem::path &path)
 {
   std::filesystem::path absolute_path = convert_to_absolute(path);
 

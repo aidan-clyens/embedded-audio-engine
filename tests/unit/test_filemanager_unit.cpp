@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include <iostream>
 
-#include "filesystem.h"
+#include "filemanager.h"
 #include "wavfile.h"
 #include "midifile.h"
 #include "logger.h"
@@ -11,7 +11,7 @@ using namespace Files;
 
 TEST(FileSystemTest, PathExists)
 {
-  FileSystem& fs = FileSystem::instance();
+  FileManager& fs = FileManager::instance();
 
   std::filesystem::path existing_path = "src";
   ASSERT_TRUE(fs.path_exists(existing_path)) << "Existing path should return true.";
@@ -22,7 +22,7 @@ TEST(FileSystemTest, PathExists)
 
 TEST(FileSystemTest, IsFile)
 {
-  FileSystem& fs = FileSystem::instance();
+  FileManager& fs = FileManager::instance();
 
   std::filesystem::path file_path = "./README.md";
   ASSERT_TRUE(fs.is_file(file_path)) << "Path should be recognized as a file.";
@@ -33,7 +33,7 @@ TEST(FileSystemTest, IsFile)
 
 TEST(FileSystemTest, IsWavFile)
 {
-  FileSystem& fs = FileSystem::instance();
+  FileManager& fs = FileManager::instance();
 
   std::filesystem::path wav_file_path = "./samples/test.wav";
   ASSERT_TRUE(fs.is_wav_file(wav_file_path)) << "Path should be recognized as a WAV file.";
@@ -44,7 +44,7 @@ TEST(FileSystemTest, IsWavFile)
 
 TEST(FileSystemTest, IsMidiFile)
 {
-  FileSystem &fs = FileSystem::instance();
+  FileManager &fs = FileManager::instance();
 
   std::filesystem::path midi_file_path = "./samples/midi_c_major_monophonic.mid";
   ASSERT_TRUE(fs.is_midi_file(midi_file_path)) << "Path should be recognized as a MIDI file.";
@@ -55,7 +55,7 @@ TEST(FileSystemTest, IsMidiFile)
 
 TEST(FileSystemTest, IsDirectory)
 {
-  FileSystem& fs = FileSystem::instance();
+  FileManager& fs = FileManager::instance();
 
   std::filesystem::path directory_path = "src";
   ASSERT_TRUE(fs.is_directory(directory_path)) << "Path should be recognized as a directory.";
@@ -66,7 +66,7 @@ TEST(FileSystemTest, IsDirectory)
 
 TEST(FileSystemTest, ListDirectory)
 {
-  FileSystem& fs = FileSystem::instance();
+  FileManager& fs = FileManager::instance();
   std::filesystem::path path = "./";
 
   // Get all contents from directory
@@ -94,7 +94,7 @@ TEST(FileSystemTest, ListDirectory)
 
 TEST(FileSystemTest, ListWavFilesInDirectory)
 {
-  FileSystem& fs = FileSystem::instance();
+  FileManager& fs = FileManager::instance();
 
   std::filesystem::path path = "./samples";
 
@@ -112,7 +112,7 @@ TEST(FileSystemTest, ListWavFilesInDirectory)
 
 TEST(FileSystemTest, ListMidiFilesInDirectory)
 {
-  FileSystem &fs = FileSystem::instance();
+  FileManager &fs = FileManager::instance();
 
   std::filesystem::path path = "./samples";
 
@@ -135,7 +135,7 @@ TEST(FileSystemTest, SaveToWavFile)
 
 TEST(FileSystemTest, LoadWavFile)
 {
-  FileSystem& fs = FileSystem::instance();
+  FileManager& fs = FileManager::instance();
 
   // Get a WAV file path
   std::vector<std::filesystem::path> samples = fs.list_wav_files_in_directory("./samples");

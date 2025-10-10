@@ -6,7 +6,7 @@
 #include <string>
 #include <sndfile.h>
 
-#include "filesystem.h"
+#include "filemanager.h"
 
 namespace Files
 {
@@ -16,7 +16,7 @@ namespace Files
  */
 class WavFile : public File
 {
-friend class FileSystem;
+friend class FileManager;
 
 public:
   virtual ~WavFile() = default;

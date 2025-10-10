@@ -4,7 +4,7 @@
 
 #include "audioengine.h"
 #include "trackmanager.h"
-#include "filesystem.h"
+#include "filemanager.h"
 #include "wavfile.h"
 #include "devicemanager.h"
 #include "logger.h"
@@ -37,9 +37,9 @@ TEST(AudioInputIntegrationTest, AudioInput)
   // Open a test WAV file and load it into the track
   std::string test_wav_file = "samples/test.wav";
 
-  WavFile wav_file = FileSystem::instance().read_wav_file(test_wav_file);
-  ASSERT_EQ(wav_file.get_filepath(), FileSystem::instance().convert_to_absolute(test_wav_file));
-  ASSERT_EQ(wav_file.get_filename(), FileSystem::instance().convert_to_absolute(test_wav_file).filename().string());
+  WavFile wav_file = FileManager::instance().read_wav_file(test_wav_file);
+  ASSERT_EQ(wav_file.get_filepath(), FileManager::instance().convert_to_absolute(test_wav_file));
+  ASSERT_EQ(wav_file.get_filename(), FileManager::instance().convert_to_absolute(test_wav_file).filename().string());
 
   LOG_INFO("WAV file loaded: ", wav_file.get_filepath());
 

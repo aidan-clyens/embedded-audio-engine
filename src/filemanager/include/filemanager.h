@@ -19,7 +19,7 @@ class MidiFile;
  */
 class File : public IInput
 {
-  friend class FileSystem;
+  friend class FileManager;
 
 public:
   virtual ~File() = default;
@@ -50,15 +50,15 @@ enum class PathType
   All,
 };
 
-/** @class FileSystem
+/** @class FileManager
  *  @brief Singleton class for managing file system operations.
  */
-class FileSystem
+class FileManager
 {
 public:
-  static FileSystem& instance()
+  static FileManager& instance()
   {
-    static FileSystem instance;
+    static FileManager instance;
     return instance;
   }
 
@@ -126,11 +126,11 @@ public:
   MidiFile read_midi_file(const std::filesystem::path &path);
 
 private:
-  FileSystem() = default;
-  virtual ~FileSystem() = default;
+  FileManager() = default;
+  virtual ~FileManager() = default;
 
-  FileSystem(const FileSystem&) = delete;
-  FileSystem& operator=(const FileSystem&) = delete;
+  FileManager(const FileManager&) = delete;
+  FileManager& operator=(const FileManager&) = delete;
 };
 
 }  // namespace Files

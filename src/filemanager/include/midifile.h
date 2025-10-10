@@ -1,7 +1,7 @@
 #ifndef __MIDI_FILE_H__
 #define __MIDI_FILE_H__
 
-#include "filesystem.h"
+#include "filemanager.h"
 
 namespace Files
 {
@@ -11,7 +11,7 @@ namespace Files
  */
 class MidiFile : public File
 {
-friend class FileSystem;
+friend class FileManager;
 
 public:
   virtual ~MidiFile() = default;

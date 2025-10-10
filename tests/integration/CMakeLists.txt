@@ -12,7 +12,7 @@ target_link_libraries(EmbeddedAudioEngineTests PRIVATE
   audioengine
   midiengine
   trackmanager
-  filesystem
+  filemanager
   devicemanager
 )
 
