@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 #include <iostream>
+#include <memory>
 
 #include "trackmanager.h"
 #include "track.h"
@@ -72,6 +73,6 @@ TEST(TrackTest, AddWavFileInput)
   // Open a test WAV file and load it into the track
   std::string test_wav_file = "samples/test.wav";
 
-  Files::WavFile wav_file = Files::FileManager::instance().read_wav_file(test_wav_file);
+  std::shared_ptr<Files::WavFile> wav_file = Files::FileManager::instance().read_wav_file(test_wav_file);
   track->add_audio_file_input(wav_file);
 }

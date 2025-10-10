@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 #include <thread>
 #include <chrono>
+#include <memory>
 
 #include "audioengine.h"
 #include "trackmanager.h"
@@ -37,11 +38,11 @@ TEST(AudioInputIntegrationTest, AudioInput)
   // Open a test WAV file and load it into the track
   std::string test_wav_file = "samples/test.wav";
 
-  WavFile wav_file = FileManager::instance().read_wav_file(test_wav_file);
-  ASSERT_EQ(wav_file.get_filepath(), FileManager::instance().convert_to_absolute(test_wav_file));
-  ASSERT_EQ(wav_file.get_filename(), FileManager::instance().convert_to_absolute(test_wav_file).filename().string());
+  auto wav_file = FileManager::instance().read_wav_file(test_wav_file);
+  ASSERT_EQ(wav_file->get_filepath(), FileManager::instance().convert_to_absolute(test_wav_file));
+  ASSERT_EQ(wav_file->get_filename(), FileManager::instance().convert_to_absolute(test_wav_file).filename().string());
 
-  LOG_INFO("WAV file loaded: ", wav_file.get_filepath());
+  LOG_INFO("WAV file loaded: ", wav_file->get_filepath());
 
   track->add_audio_file_input(wav_file);
 

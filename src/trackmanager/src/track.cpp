@@ -48,14 +48,14 @@ void Track::add_midi_input(const unsigned int device_id)
 /** @brief Adds a WAV file input to the track.
  *  @param wav_file The WAV file.
  */
-void Track::add_audio_file_input(const Files::WavFile &wav_file)
+void Track::add_audio_file_input(const std::shared_ptr<Files::WavFile> &wav_file)
 {
-  LOG_INFO("Track: Added WAV file input: ", wav_file.get_filename());
-  LOG_INFO("Sample Rate: ", wav_file.get_sample_rate(),
-           ", Channels: ", wav_file.get_channels(),
-           ", Format: ", wav_file.get_format());
+  LOG_INFO("Track: Added WAV file input: ", wav_file->get_filename());
+  LOG_INFO("Sample Rate: ", wav_file->get_sample_rate(),
+           ", Channels: ", wav_file->get_channels(),
+           ", Format: ", wav_file->get_format());
 
-  Audio::AudioEngine::instance().set_stream_parameters(wav_file.get_channels(), wav_file.get_sample_rate(), 512);
+  Audio::AudioEngine::instance().set_stream_parameters(wav_file->get_channels(), wav_file->get_sample_rate(), 512);
 }
 
 /** @brief Adds a MIDI file input to the track.

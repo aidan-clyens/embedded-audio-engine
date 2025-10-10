@@ -6,6 +6,7 @@
 #include <filesystem>
 #include <vector>
 #include <string>
+#include <memory>
 
 namespace Files
 {
@@ -121,7 +122,7 @@ public:
   }
 
 	void save_to_wav_file(std::vector<float> audio_buffer, const std::filesystem::path &path);
-  WavFile read_wav_file(const std::filesystem::path &path);
+  std::shared_ptr<WavFile> read_wav_file(const std::filesystem::path &path);
 
   MidiFile read_midi_file(const std::filesystem::path &path);
 

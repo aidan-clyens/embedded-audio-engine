@@ -98,7 +98,7 @@ void FileManager::save_to_wav_file(std::vector<float> audio_buffer, const std::f
  *  @return An AudioFile object containing the loaded audio data.
  *  @throws std::runtime_error if the file cannot be opened or read.
  */
-WavFile FileManager::read_wav_file(const std::filesystem::path &path)
+std::shared_ptr<WavFile> FileManager::read_wav_file(const std::filesystem::path &path)
 {
   std::filesystem::path absolute_path = convert_to_absolute(path);
 
@@ -107,7 +107,7 @@ WavFile FileManager::read_wav_file(const std::filesystem::path &path)
     throw std::runtime_error("WAV file does not exist or is not a file: " + absolute_path.string());
   }
 
-  return WavFile(absolute_path);
+  return std::shared_ptr<WavFile>(new WavFile(absolute_path));
 }
 
 /** @brief Loads audio data from a WAV file.
