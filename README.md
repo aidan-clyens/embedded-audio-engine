@@ -1,70 +1,104 @@
-# Embedded Audio Processing Engine for ARM64
+# Embedded Audio Engine
 
-## Platform
+The Embedded Audio Engine is a C++ project designed for cross-platform embedded audio processing on lightweight computing platforms like the Raspberry Pi.
 
-**Architecture:**<br>
-x86_64<br>
-ARM64<br>
+# Build Environment
 
-**OS:**<br>
-Ubuntu 22.04<br>
-Raspberry PI OS<br>
+- Cross-platform build support (x86_64 and ARM64)
+- Docker-based development environment
+- CMake build system
 
-## Getting Starting
+## Prerequisites
 
-**Clone Repo:**<br>
+Make sure you have the following installed on your Ubuntu system:
+
+- Docker
+- Docker Buildx (usually included with recent Docker versions)
+- Git
+
+## Clone the Repository
+
+git clone https://github.com/<your-username>/embedded-audio-engine.git
+cd embedded-audio-engine
+
+## Build with Docker
+
+The project provides a multi-arch Docker image published to GitHub Container Registry (GHCR).This ensures a consistent build environment across AMD64 and ARM64.
+
+### 1. Pull the Development Image
+
 ```bash
-git clone ...AudioEngine.git
-cd AudioEngine
+docker pull ghcr.io/aidan-clyens/embedded-audio-engine-dev:latest
 ```
 
-### Configure for Linux x86_64
-The following must be run as root
+### 2. Run the Container
 
-1. Add **KitWare** repository
-    ```bash
-    sudo ./kitware-archive.sh
-    ```
-2. Install build dependencies
-    ```bash
-    sudo ./configure.sh
-    ```
-3. Create a **Python** virtual environment and install required packages
-    ```bash
-    python3 -m venv venv
-    source venv/bin/activate
-    ```
-    ```bash
-    pip install --upgrade pip
-    pip install -r requirements.txt
-    ```
+Mount the repository into the container and start a shell:
 
-### Configure for Linux ARM64
+```bash
+docker run --rm -it \
+  -v $(pwd):/workspace \
+  -w /workspace \
+  ghcr.io/aidan-clyens/embedded-audio-engine-dev:latest \
+  bash
+```
 
-### Building for Linux x86_64
-1. Set up **CMake**
-    ```bash
-    cmake -S . -B build_x86_64
-    ```
-2. Build
-    ```bash
-    cmake --build build_x86_64
-    ```
+### 3. Build the Project with CMake
 
-### Building for Linux ARM64
+Inside the container:
 
-### Running for Linux x86_64
-1. Make sure Audio devices are available
-    ```bash
-    python3 scripts/alsa_devices.py
-    ```
-2. Make sure audio output is working
-    ```bash
-    python3 scripts/play_audio.py
-    ```
+```bash
+cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
+ctest --test-dir build
+```
 
+The compiled binaries will be available in the build/ directory.
 
+## Architecture-Specific Builds
 
-## Docs
+You can explicitly build for AMD64 or ARM64 using Docker’s --platform flag.
 
-## License
+### Build for AMD64
+
+```bash
+docker run --rm -it \
+  --platform linux/amd64 \
+  -v $(pwd):/workspace \
+  -w /workspace \
+  ghcr.io/aidan-clyens/embedded-audio-engine-dev:latest \
+  bash -c "cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build --parallel && ctest --test-dir build"
+```
+
+### Build for ARM64
+
+```bash
+docker run --rm -it \
+  --platform linux/arm64 \
+  -v $(pwd):/workspace \
+  -w /workspace \
+  ghcr.io/aidan-clyens/embedded-audio-engine-dev:latest \
+  bash -c "cmake -B build -S . -DCMAKE_BUILD_TYPE=Release && cmake --build build --parallel && ctest --test-dir build"
+```
+
+# Continuous Integration (CI)
+
+This repository uses GitHub Actions to:
+1. Build and push a multi-arch Docker image (linux/amd64, linux/arm64)
+2. Compile and test the project inside the container
+3. Package build artifacts (.tar.gz) for both architectures
+4. Publish nightly releases with prebuilt binaries
+
+You can find the latest prebuilt binaries under the Releases page.
+
+# Project Structure
+
+```
+embedded-audio-engine/
+├── CMakeLists.txt      # CMake build configuration
+├── Dockerfile          # Build environment definition
+├── src/                # Source code
+├── include/            # Public headers
+├── tests/              # Unit tests
+└── .github/workflows/  # CI/CD pipeline
+```
